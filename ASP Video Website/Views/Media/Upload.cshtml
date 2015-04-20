@@ -1,0 +1,33 @@
+﻿@using System.Web.UI.HtmlControls
+
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload new media</h2>
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Media Element</legend>
+
+        <div class="editor-label">
+            Select Media File to Upload:
+        </div>
+        <div class="editor-field">
+            <input type="file" id="selectFile" value=" " />
+            <input type="button" id="fileUpload" value="Upload" />
+        </div>
+        <div id="progressBar" style="width: 50%; height: 20px; background-color: grey"></div>
+        <br />
+        <label id="statusMessage"></label>
+    </fieldset>
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    <script src="~/Scripts/media-upload.js"></script>
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}

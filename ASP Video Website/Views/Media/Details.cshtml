@@ -1,0 +1,50 @@
+﻿@model ASP_Video_Website.Models.MediaElement
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>MediaElement</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AssetId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssetId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPublic)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPublic)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
