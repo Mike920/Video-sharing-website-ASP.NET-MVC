@@ -20,7 +20,7 @@ namespace ASP_Video_Website.Models
         {
         }
 
-        public System.Data.Entity.DbSet<ASP_Video_Website.Models.MediaElement> MediaElements { get; set; }
+        public DbSet<MediaElement> MediaElements { get; set; }
     
     }
 }
