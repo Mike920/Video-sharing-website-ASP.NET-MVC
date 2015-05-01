@@ -1083,6 +1083,7 @@
     <Content Include="Media\sintel\sintel_aac240k_98.m4s" />
     <Content Include="Media\sintel\sintel_aac240k_99.m4s" />
     <Content Include="Media\sintel\sintel_aac240k_init.mp4" />
+    <Content Include="Media\sintel\Sintel.mp4" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
