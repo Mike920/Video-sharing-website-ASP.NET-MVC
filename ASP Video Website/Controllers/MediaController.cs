@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using ASP_Video_Website.Models;
 
@@ -22,6 +23,26 @@ namespace ASP_Video_Website.Controllers
         public ActionResult Videos()
         {
             return View();
+        }
+
+        public ActionResult Movie()
+        {
+            return View();
+        }
+
+
+        public ActionResult File(string id)
+        {
+            if(String.IsNullOrWhiteSpace(id))
+                return HttpNotFound();
+
+            //TODO: if movie return videoresult coz movie needs to be streamed, return error if not found
+            var filename = HostingEnvironment.MapPath("~/Media/sintel/" + id);
+
+            string contentType = MimeMapping.GetMimeMapping(id);
+
+
+            return File(filename, contentType, id);
         }
 
         // GET: Media
