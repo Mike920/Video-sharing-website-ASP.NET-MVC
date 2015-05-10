@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ASP_Video_Website.Models.MediaElement>
+﻿@model IEnumerable<ASP_Video_Website.Models.MediaFile>
 
 @{
     ViewBag.Title = "Index";
@@ -11,17 +11,15 @@
 </p>
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.UserId)
-        </th>
+        
         <th>
             @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AssetId)
+            @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsPublic)
+            @Html.DisplayNameFor(model => model.Id)
         </th>
         <th></th>
     </tr>
@@ -29,21 +27,19 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.UserId)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Title)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.AssetId)
+            @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IsPublic)
+            @Html.DisplayFor(modelItem => item.Id)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Display", "Display", new { id = item.Id }) |
+            @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
+            @Html.ActionLink("Details", "Details", new {id = item.Id}) |
+            @Html.ActionLink("Delete", "Delete", new {id = item.Id})
         </td>
     </tr>
 }

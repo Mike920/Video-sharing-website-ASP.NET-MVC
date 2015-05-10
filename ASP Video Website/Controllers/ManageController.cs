@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ASP_Video_Website.Models;
+using ASP_Video_Website.ViewModels;
 
 namespace ASP_Video_Website.Controllers
 {

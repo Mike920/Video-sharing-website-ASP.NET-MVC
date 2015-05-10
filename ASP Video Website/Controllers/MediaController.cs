@@ -2,22 +2,28 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using ASP_Video_Website.Extensions;
 using ASP_Video_Website.Models;
+using ASP_Video_Website.Services;
+using ASP_Video_Website.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace ASP_Video_Website.Controllers
 {
+
     public class MediaController : Controller
     {
-        private MediaDbContext db = new MediaDbContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ActionResult Video()
         {
-            return new VideoResult();
+            return new VideoResult("Media/sintel/vid7.mp4");
         }
 
         public ActionResult Videos()
@@ -30,26 +36,27 @@ namespace ASP_Video_Website.Controllers
             return View();
         }
 
-
-        public ActionResult File(string id)
+        public ActionResult Mp4()
         {
-            if(String.IsNullOrWhiteSpace(id))
-                return HttpNotFound();
-
-            //TODO: if movie return videoresult coz movie needs to be streamed, return error if not found
-            var filename = HostingEnvironment.MapPath("~/Media/sintel/" + id);
-
-            string contentType = MimeMapping.GetMimeMapping(id);
-
-
-            return File(filename, contentType, id);
+            return View();
         }
 
+
+        
+
         // GET: Media
+      
         public ActionResult Index()
         {
            // return View();
-             return View(db.MediaElements.ToList());
+             return View(db.MediaFiles.ToList());
+        }
+
+        [Route("Media/{id:int}")]
+        public ActionResult Display(int id)
+        {
+            ViewBag.MediaId = id;
+            return View();
         }
 
         // GET: Media/Details/5
@@ -59,18 +66,58 @@ namespace ASP_Video_Website.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MediaElement mediaElement = db.MediaElements.Find(id);
-            if (mediaElement == null)
+            MediaFile mediaFile = db.MediaFiles.Find(id);
+            if (mediaFile == null)
             {
                 return HttpNotFound();
             }
-            return View(mediaElement);
+            return View(mediaFile);
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult Upload()
         {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Upload([Bind(Include = "Title,Description,IsPrivate")]MediaFile mediaFile, HttpPostedFileBase file)
+        {
+
+            mediaFile.ApplicationUserId = User.Identity.GetUserId();
+
+            if (!ModelState.IsValid)
+                return View(mediaFile);
+            
+
+
+
+            if (file != null && file.ContentLength > 0)
+            {
+                db.MediaFiles.Add(mediaFile);
+                db.SaveChanges();
+
+                var dir = Server.MapPath("~/App_Data/Videos/" + mediaFile.Id);
+
+                //todo: check if dir exists
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+
+                var fileName = Path.GetFileName(file.FileName);
+                var path = Path.Combine(dir, fileName);
+                file.SaveAs(path);
+
+                MediaService.ConvertVideo(fileName,mediaFile.Id);
+
+                ViewBag.Info = "Your video was successfully uploaded";
+
+                return View("Info");
+            }
+
+            return View(mediaFile);
+            
         }
 
         // GET: Media/Create
@@ -84,16 +131,16 @@ namespace ASP_Video_Website.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,UserId,Title,AssetId,IsPublic")] MediaElement mediaElement)
+        public ActionResult Create([Bind(Include = "Id,UserId,Title,AssetId,IsPublic")] MediaFile mediaFile)
         {
             if (ModelState.IsValid)
             {
-                db.MediaElements.Add(mediaElement);
+                db.MediaFiles.Add(mediaFile);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(mediaElement);
+            return View(mediaFile);
         }
 
         // GET: Media/Edit/5
@@ -103,12 +150,12 @@ namespace ASP_Video_Website.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MediaElement mediaElement = db.MediaElements.Find(id);
-            if (mediaElement == null)
+            MediaFile mediaFile = db.MediaFiles.Find(id);
+            if (mediaFile == null)
             {
                 return HttpNotFound();
             }
-            return View(mediaElement);
+            return View(mediaFile);
         }
 
         // POST: Media/Edit/5
@@ -116,15 +163,15 @@ namespace ASP_Video_Website.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,UserId,Title,AssetId,IsPublic")] MediaElement mediaElement)
+        public ActionResult Edit([Bind(Include = "Id,UserId,Title,AssetId,IsPublic")] MediaFile mediaFile)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(mediaElement).State = EntityState.Modified;
+                db.Entry(mediaFile).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(mediaElement);
+            return View(mediaFile);
         }
 
         // GET: Media/Delete/5
@@ -134,12 +181,12 @@ namespace ASP_Video_Website.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MediaElement mediaElement = db.MediaElements.Find(id);
-            if (mediaElement == null)
+            MediaFile mediaFile = db.MediaFiles.Find(id);
+            if (mediaFile == null)
             {
                 return HttpNotFound();
             }
-            return View(mediaElement);
+            return View(mediaFile);
         }
 
         // POST: Media/Delete/5
@@ -147,8 +194,8 @@ namespace ASP_Video_Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            MediaElement mediaElement = db.MediaElements.Find(id);
-            db.MediaElements.Remove(mediaElement);
+            MediaFile mediaFile = db.MediaFiles.Find(id);
+            db.MediaFiles.Remove(mediaFile);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

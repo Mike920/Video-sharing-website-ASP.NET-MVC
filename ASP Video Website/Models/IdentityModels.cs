@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -16,6 +19,10 @@ namespace ASP_Video_Website.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        [ScaffoldColumn(false)]
+        public bool Admin { get; set; }
+        public virtual ICollection<MediaFile> MediaFiles { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -29,5 +36,8 @@ namespace ASP_Video_Website.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<MediaFile> MediaFiles { get; set; }
+
     }
 }

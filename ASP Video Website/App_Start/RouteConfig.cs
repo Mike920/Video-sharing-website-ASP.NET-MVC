@@ -13,6 +13,9 @@ namespace ASP_Video_Website
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            //Enable MVC Attribute routing
+            routes.MapMvcAttributeRoutes();
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
