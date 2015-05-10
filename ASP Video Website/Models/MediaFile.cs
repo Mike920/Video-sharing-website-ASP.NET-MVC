@@ -14,6 +14,7 @@ namespace ASP_Video_Website.Models
       //  public string AssetId { get; set; }
         public string Description { get; set; }
         public bool IsPrivate { get; set; }
+        public bool Hd { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }
