@@ -9,7 +9,11 @@ namespace ASP_Video_Website.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+           // AutomaticMigrationsEnabled = false;
+
+            //Auto migrations for app harbor
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
         }
 
         protected override void Seed(ASP_Video_Website.Models.ApplicationDbContext context)

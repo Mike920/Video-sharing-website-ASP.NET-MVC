@@ -37,6 +37,12 @@ namespace ASP_Video_Website.Models
             return new ApplicationDbContext();
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, Migrations.Configuration>());
+        }
+
         public DbSet<MediaFile> MediaFiles { get; set; }
 
     }
