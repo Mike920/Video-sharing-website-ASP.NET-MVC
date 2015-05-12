@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Devtalk.EF.CodeFirst;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -30,7 +31,8 @@ namespace ASP_Video_Website.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationDbContext>());
+            //Doesnt drop db, just create tables workaround for Appharbor
+            Database.SetInitializer(new DontDropDbJustCreateTablesIfModelChanged<ApplicationDbContext>());
         }
 
         public static ApplicationDbContext Create()
