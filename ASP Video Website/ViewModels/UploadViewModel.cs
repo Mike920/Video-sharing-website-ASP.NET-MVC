@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Web;
-using ASP_Video_Website.Models;
 
 namespace ASP_Video_Website.ViewModels
 {

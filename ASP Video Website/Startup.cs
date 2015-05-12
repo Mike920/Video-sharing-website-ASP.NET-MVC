@@ -1,7 +1,8 @@
-﻿using Microsoft.Owin;
+﻿using ASP_Video_Website;
+using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(ASP_Video_Website.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 namespace ASP_Video_Website
 {
     public partial class Startup

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
 using ASP_Video_Website.Extensions;
 using ASP_Video_Website.Models;
 using ASP_Video_Website.Services;
-using ASP_Video_Website.ViewModels;
 using Microsoft.AspNet.Identity;
 
 namespace ASP_Video_Website.Controllers

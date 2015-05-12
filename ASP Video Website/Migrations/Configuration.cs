@@ -1,11 +1,9 @@
+using System.Data.Entity.Migrations;
+using ASP_Video_Website.Models;
+
 namespace ASP_Video_Website.Migrations
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Migrations;
-    using System.Linq;
-
-    internal sealed class Configuration : DbMigrationsConfiguration<ASP_Video_Website.Models.ApplicationDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
         public Configuration()
         {
@@ -13,7 +11,7 @@ namespace ASP_Video_Website.Migrations
             AutomaticMigrationDataLossAllowed = true;
         }
 
-        protected override void Seed(ASP_Video_Website.Models.ApplicationDbContext context)
+        protected override void Seed(ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

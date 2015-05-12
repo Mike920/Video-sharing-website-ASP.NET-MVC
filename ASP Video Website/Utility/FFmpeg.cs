@@ -2,10 +2,8 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
-using Newtonsoft.Json;
 
 namespace ASP_Video_Website.Utility
 {
@@ -100,7 +98,7 @@ namespace ASP_Video_Website.Utility
             try
             {
                 //run the process
-                Process proc = System.Diagnostics.Process.Start(oInfo);
+                Process proc = Process.Start(oInfo);
 
                 proc.ErrorDataReceived += (sender, args) =>
                 {

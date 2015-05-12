@@ -1,15 +1,12 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ASP_Video_Website.Models;
+using ASP_Video_Website.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using ASP_Video_Website.Models;
-using ASP_Video_Website.ViewModels;
 
 namespace ASP_Video_Website.Controllers
 {
