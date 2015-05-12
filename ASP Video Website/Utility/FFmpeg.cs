@@ -174,6 +174,7 @@ namespace ASP_Video_Website.Utility
                 {
                     mediaInfo.Video.HasVideo = true;
                     mediaInfo.Video.Bitrate = int.Parse(stream.bit_rate)/1000;
+                    mediaInfo.Video.Duration = double.Parse(((string)stream.duration).Replace('.',','));
                     mediaInfo.Video.Resolution.Width = stream.width;
                     mediaInfo.Video.Resolution.Heigth = stream.height;
 
@@ -197,6 +198,7 @@ namespace ASP_Video_Website.Utility
                     public Resolution_ Resolution;
                     //in kilobits
                     public int Bitrate;
+                    public double Duration;
 
                     public struct Resolution_
                     {

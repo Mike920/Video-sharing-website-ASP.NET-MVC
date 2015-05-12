@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace ASP_Video_Website.Services
             var outputVidHd = Path.Combine(baseDir, "hd.mp4");
             var outputAudio = Path.Combine(baseDir, "audio.mp4");
             var outputMobile = Path.Combine(baseDir, "mobile.mp4");
+            var outputThumbnail = Path.Combine(baseDir, "thumbnail.jpg");
 
             var segmentsDir = Path.Combine(baseDir, "segments");
 
@@ -59,14 +61,25 @@ namespace ASP_Video_Website.Services
                     mediaDir, outputAudio);
                 result = ffmpeg.RunCommand(command);
 
+                //Extract thumbnail from the middle of the video
+                command = String.Format(" -ss {0} -i \"{1}\"  -t 1 -s 360x240 -f image2 \"{2}\" ", (mediaInfo.Video.Duration/2).ToString(CultureInfo.InvariantCulture),
+                    mediaDir, outputThumbnail);
+                result = ffmpeg.RunCommand(command);
+
                 //Convert to mobile (add sound to sd video)
                 command = String.Format("-i \"{0}\" -i \"{1}\" -c:v copy -c:a copy \"{2}\"",
                         outputVidSd,outputAudio,outputMobile);
                 result = ffmpeg.RunCommand(command);
 
+                //Segment videos and audio 
                 Mp4Box mp4Box = new Mp4Box();
                 command = String.Format("-dash 1000 -bs-switching no -segment-name \"%s_\" -url-template -out \"{0}\" \"{1}\" \"{2}\" \"{3}\" ", Path.Combine(segmentsDir, "video.mpd"),outputVidSd,outputVidHd,outputAudio);
                 result = mp4Box.RunCommand(command);
+
+                File.Delete(mediaDir);
+                File.Delete(outputVidSd);
+                File.Delete(outputVidHd);
+                File.Delete(outputAudio);
 
                 //todo: add entry to db
             }, TaskCreationOptions.LongRunning);
