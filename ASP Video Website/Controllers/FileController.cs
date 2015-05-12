@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using System.IO;
 using ASP_Video_Website.Extensions;
 
 namespace ASP_Video_Website.Controllers
@@ -61,6 +62,21 @@ namespace ASP_Video_Website.Controllers
             string contentType = MimeMapping.GetMimeMapping(filepath);
 
             return File(filepath, contentType, filename);
+        }
+
+        public string LogFile()
+        {
+            if (System.IO.File.Exists(HostingEnvironment.MapPath("~/MediaData/log.txt")))
+                return System.IO.File.ReadAllText(HostingEnvironment.MapPath("~/MediaData/log.txt"));
+            return "Log file doesn't exist";
+        }
+
+        public ActionResult GetLogFile()
+        {
+            var logFile = HostingEnvironment.MapPath("~/MediaData/log.txt");
+            string contentType = MimeMapping.GetMimeMapping(logFile);
+
+            return File(logFile, contentType, "log.txt");
         }
     }
 }

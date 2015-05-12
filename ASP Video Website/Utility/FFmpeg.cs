@@ -2,8 +2,10 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
+using Newtonsoft.Json;
 
 namespace ASP_Video_Website.Utility
 {
@@ -98,7 +100,7 @@ namespace ASP_Video_Website.Utility
             try
             {
                 //run the process
-                Process proc = Process.Start(oInfo);
+                Process proc = System.Diagnostics.Process.Start(oInfo);
 
                 proc.ErrorDataReceived += (sender, args) =>
                 {
@@ -106,7 +108,9 @@ namespace ASP_Video_Website.Utility
                         if (args.Data != null)
                         {
                             Debug.WriteLine("Error: " + args.Data);
-                           // output += args.Data +Environment.NewLine;
+
+                            if(programToRun == ProgramToRun.FFMPEG)
+                                output += args.Data +Environment.NewLine;
                         }
                 };
 
