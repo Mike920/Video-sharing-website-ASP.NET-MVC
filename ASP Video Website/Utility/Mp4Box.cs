@@ -93,7 +93,7 @@ namespace ASP_Video_Website.Utility
                         if (args.Data != null)
                         {
                             Debug.WriteLine("Error: " + args.Data);
-                           // output += args.Data +Environment.NewLine;
+                            output += args.Data +Environment.NewLine;
                         }
                 };
 

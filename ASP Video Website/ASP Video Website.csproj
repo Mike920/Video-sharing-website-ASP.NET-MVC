@@ -264,11 +264,11 @@
     <Content Include="Views\Test\Convert.cshtml" />
     <Content Include="Views\Media\Info.cshtml" />
     <Content Include="Views\Media\Display.cshtml" />
+    <Content Include="Views\File\GetFiles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Videos\" />
     <Folder Include="MediaData\Videos\" />
-    <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

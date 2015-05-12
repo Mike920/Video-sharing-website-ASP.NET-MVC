@@ -78,5 +78,23 @@ namespace ASP_Video_Website.Controllers
 
             return File(logFile, contentType, "log.txt");
         }
+
+        public ActionResult GetFiles(int id)
+        {
+            var dir = HostingEnvironment.MapPath("~/MediaData/Videos/" + id);
+            var segments = HostingEnvironment.MapPath("~/MediaData/Videos/" + id + "/segments");
+
+            if (Directory.Exists(dir))
+                ViewBag.Files = Directory.GetFiles(dir);
+            else
+                ViewBag.Files = new string[] {"No files found."};
+
+            if (Directory.Exists(segments))
+                ViewBag.Segments = Directory.GetFiles(segments);
+            else
+                ViewBag.Segments = new string[] { "No files found." };
+
+            return View();
+        }
     }
 }

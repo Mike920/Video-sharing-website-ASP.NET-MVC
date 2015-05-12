@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "GetFiles";
+}
+
+<h2>GetFiles</h2>
+
+<h3>Files</h3>
+<ul>
+    @foreach (string file in ViewBag.Files)
+    {
+        <li>@file</li>
+    }
+</ul>
+<br/>
+
+<h3>Segments</h3>
+<ul>
+    @foreach (string file in ViewBag.Segments)
+    {
+        <li>@file</li>
+    }
+</ul>
