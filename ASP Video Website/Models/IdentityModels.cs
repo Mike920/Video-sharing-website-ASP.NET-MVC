@@ -31,8 +31,8 @@ namespace ASP_Video_Website.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
-            //Doesnt drop db, just create tables workaround for Appharbor
-            Database.SetInitializer(new DontDropDbJustCreateTablesIfModelChanged<ApplicationDbContext>());
+           
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext,Migrations.Configuration>());
         }
 
         public static ApplicationDbContext Create()

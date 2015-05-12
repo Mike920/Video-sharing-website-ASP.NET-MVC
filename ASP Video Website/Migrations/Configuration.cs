@@ -9,9 +9,6 @@ namespace ASP_Video_Website.Migrations
     {
         public Configuration()
         {
-           // AutomaticMigrationsEnabled = false;
-
-            //Auto migrations for app harbor
             AutomaticMigrationsEnabled = true;
             AutomaticMigrationDataLossAllowed = true;
         }
