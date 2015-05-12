@@ -267,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Videos\" />
+    <Folder Include="MediaData\Videos\" />
     <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>

@@ -39,7 +39,7 @@ namespace ASP_Video_Website.Controllers
         public ActionResult MediaSegment(int id, string filename)
         {
 
-            var filepath = HostingEnvironment.MapPath("~/App_Data/Videos/" + id + "/segments/" + filename);
+            var filepath = HostingEnvironment.MapPath("~/MediaData/Videos/" + id + "/segments/" + filename);
 
             if (!System.IO.File.Exists(filepath))
                 return HttpNotFound();
@@ -53,7 +53,7 @@ namespace ASP_Video_Website.Controllers
         public ActionResult MediaFile(int id, string filename)
         {
 
-            var filepath = HostingEnvironment.MapPath("~/App_Data/Videos/" + id + "/" + filename);
+            var filepath = HostingEnvironment.MapPath("~/MediaData/Videos/" + id + "/" + filename);
 
             if (!System.IO.File.Exists(filepath))
                 return HttpNotFound();

@@ -93,7 +93,7 @@ namespace ASP_Video_Website.Controllers
                 db.MediaFiles.Add(mediaFile);
                 db.SaveChanges();
 
-                var dir = Server.MapPath("~/App_Data/Videos/" + mediaFile.Id);
+                var dir = Server.MapPath("~/MediaData/Videos/" + mediaFile.Id);
 
                 //todo: check if dir exists
                 if (!Directory.Exists(dir))

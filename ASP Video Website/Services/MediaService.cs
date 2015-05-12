@@ -11,7 +11,7 @@ namespace ASP_Video_Website.Services
     {
         static public void ConvertVideo(string mediaName,int mediaId)
         {
-            var baseDir = HostingEnvironment.MapPath("~/App_Data/Videos/" + mediaId);
+            var baseDir = HostingEnvironment.MapPath("~/MediaData/Videos/" + mediaId);
             var mediaDir = Path.Combine(baseDir, mediaName);
 
             var mediaInfo = GetMediaInfo(mediaDir);
