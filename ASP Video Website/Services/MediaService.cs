@@ -69,7 +69,7 @@ namespace ASP_Video_Website.Services
                 logFile.WriteLine(result);
 
                 //Extract thumbnail from the middle of the video
-                command = String.Format(" -ss {0} -i \"{1}\"  -t 1 -s 360x240 -f image2 \"{2}\" ", (mediaInfo.Video.Duration/2).ToString(CultureInfo.InvariantCulture),
+                command = String.Format(" -ss {0} -i \"{1}\"  -vframes 1 -an -s 360x240  \"{2}\" ", (mediaInfo.Video.Duration / 2).ToString(CultureInfo.InvariantCulture),
                     mediaDir, outputThumbnail);
                 result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Thumbnail Conversion:");

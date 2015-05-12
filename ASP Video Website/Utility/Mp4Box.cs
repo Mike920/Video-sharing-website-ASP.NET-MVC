@@ -121,7 +121,7 @@ namespace ASP_Video_Website.Utility
             }
             catch (Exception e)
             {
-                output = string.Empty;
+               // output = string.Empty;
             }
             finally
             {
