@@ -55,7 +55,7 @@ namespace ASP_Video_Website.Controllers
                 var baseDir = HostingEnvironment.MapPath("~/MediaData/Videos/" + m.Id);
                 if (!Directory.Exists(baseDir))
                 {
-                    Directory.Delete(baseDir,true);
+                   
                     MediaFile mediaFile = db.MediaFiles.Find(m.Id);
                     db.MediaFiles.Remove(mediaFile);
                    
