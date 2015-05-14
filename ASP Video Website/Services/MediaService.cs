@@ -45,7 +45,7 @@ namespace ASP_Video_Website.Services
                 FFMPEG ffmpeg = new FFMPEG();
 
                 // Convert to SD
-                string command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 \"{3}\"",
+                string command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 \"{3}\"",
                             mediaDir, ServerParams.VideoParams.p360.Video.Bitrate, ServerParams.VideoParams.p360.Video.Resolution, outputVidSd);
                 var result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// SD Conversion:");
@@ -54,7 +54,7 @@ namespace ASP_Video_Website.Services
                 //Convert to HD
                 if (videoQuality != VideoQuality.p360)
                 {
-                    command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 \"{3}\"",
+                    command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 \"{3}\"",
                         mediaDir, videoParams.Video.Bitrate, videoParams.Video.Resolution, outputVidHd);
                     result = ffmpeg.RunCommand(command);
                     logFile.WriteLine("//////////////////////// HD Conversion:");
@@ -62,7 +62,7 @@ namespace ASP_Video_Website.Services
                 }
 
                 //Convert Audio
-                command = String.Format("-i \"{0}\" -vn -strict experimental -c:a aac -b:a 192k \"{1}\"",
+                command = String.Format("-i \"{0}\" -vn -strict experimental -c:a aac -b:a 128k \"{1}\"",
                     mediaDir, outputAudio);
                 result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Audio Conversion:");
@@ -84,7 +84,7 @@ namespace ASP_Video_Website.Services
 
                 //Segment videos and audio 
                 Mp4Box mp4Box = new Mp4Box();
-                command = String.Format("-dash 1000 -bs-switching no -segment-name \"%s_\" -url-template -out \"{0}\" \"{1}\" \"{2}\" \"{3}\" ", Path.Combine(segmentsDir, "video.mpd"),outputVidSd,outputVidHd,outputAudio);
+                command = String.Format("-dash 2000 -frag 2000 -bs-switching no -segment-name \"%s_\" -url-template -out \"{0}\" \"{1}\" \"{2}\" \"{3}\" ", Path.Combine(segmentsDir, "video.mpd"), outputVidSd, outputVidHd, outputAudio);
                 result = mp4Box.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Segmenting:");
                 logFile.WriteLine(result);
