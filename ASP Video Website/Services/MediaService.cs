@@ -49,6 +49,7 @@ namespace ASP_Video_Website.Services
                             mediaDir, ServerParams.VideoParams.p360.Video.Bitrate, ServerParams.VideoParams.p360.Video.Resolution, outputVidSd);
                 var result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// SD Conversion:");
+                logFile.Write("COMMAND:  "+command);
                 logFile.WriteLine(result);
 
                 //Convert to HD
@@ -58,6 +59,7 @@ namespace ASP_Video_Website.Services
                         mediaDir, videoParams.Video.Bitrate, videoParams.Video.Resolution, outputVidHd);
                     result = ffmpeg.RunCommand(command);
                     logFile.WriteLine("//////////////////////// HD Conversion:");
+                    logFile.Write("COMMAND:  " + command);
                     logFile.WriteLine(result);
                 }
 
@@ -66,13 +68,15 @@ namespace ASP_Video_Website.Services
                     mediaDir, outputAudio);
                 result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Audio Conversion:");
+                logFile.Write("COMMAND:  " + command);
                 logFile.WriteLine(result);
 
                 //Extract thumbnail from the middle of the video
-                command = String.Format(" -ss {0} -i \"{1}\"  -vframes 1 -an -s 360x240  \"{2}\" ", (mediaInfo.Video.Duration / 2).ToString(CultureInfo.InvariantCulture),
+                command = String.Format(" -ss {0} -i \"{1}\"  -vframes 1 -an -s 360x240  \"{2}\" ", (mediaInfo.Video.Duration / 2).ToString().Replace(',','.'),
                     mediaDir, outputThumbnail);
                 result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Thumbnail Conversion:");
+                logFile.Write("COMMAND:  " + command);
                 logFile.WriteLine(result);
 
                 //Convert to mobile (add sound to sd video)
@@ -80,19 +84,27 @@ namespace ASP_Video_Website.Services
                         outputVidSd,outputAudio,outputMobile);
                 result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Mobile Conversion:");
+                logFile.Write("COMMAND:  " + command);
                 logFile.WriteLine(result);
+
+             
 
                 //Segment videos and audio 
                 Mp4Box mp4Box = new Mp4Box();
-                command = String.Format("-dash 2000 -frag 2000 -bs-switching no -segment-name \"%s_\" -url-template -out \"{0}\" \"{1}\" \"{2}\" \"{3}\" ", Path.Combine(segmentsDir, "video.mpd"), outputVidSd, outputVidHd, outputAudio);
+                if (videoQuality == VideoQuality.p360)
+                    command = String.Format("-dash 2000 -frag 2000 -bs-switching no -segment-name \"%s_\" -url-template -out \"{0}\" \"{1}\"  \"{2}\" ", Path.Combine(segmentsDir, "video.mpd"), outputVidSd, outputAudio);
+                else
+                    command = String.Format("-dash 2000 -frag 2000 -bs-switching no -segment-name \"%s_\" -url-template -out \"{0}\" \"{1}\" \"{2}\" \"{3}\" ", Path.Combine(segmentsDir, "video.mpd"), outputVidSd, outputVidHd, outputAudio);
+
                 result = mp4Box.RunCommand(command);
                 logFile.WriteLine("//////////////////////// Segmenting:");
+                logFile.Write("COMMAND:  " + command);
                 logFile.WriteLine(result);
                 logFile.Close();
 
                 File.Delete(mediaDir);
                 File.Delete(outputVidSd);
-                File.Delete(outputVidHd);
+                if(File.Exists(outputVidHd)) File.Delete(outputVidHd);
                 File.Delete(outputAudio);
 
                 //todo: add entry to db

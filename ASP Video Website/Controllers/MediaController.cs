@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using ASP_Video_Website.Extensions;
 using ASP_Video_Website.Models;
@@ -43,8 +44,26 @@ namespace ASP_Video_Website.Controllers
       
         public ActionResult Index()
         {
+            //todo Cleaning data for appHarbor
+
+            var media = db.MediaFiles;
+
+           // var media = db.MediaFiles.ToList();
+
+            foreach (var m in media)
+            {
+                var baseDir = HostingEnvironment.MapPath("~/MediaData/Videos/" + m.Id);
+                if (!Directory.Exists(baseDir))
+                {
+                    Directory.Delete(baseDir,true);
+                    MediaFile mediaFile = db.MediaFiles.Find(m.Id);
+                    db.MediaFiles.Remove(mediaFile);
+                   
+                }
+            }
+            db.SaveChanges();
            // return View();
-             return View(db.MediaFiles.ToList());
+             return View(media.ToList());
         }
 
         [Route("Media/{id:int}")]
