@@ -84,9 +84,10 @@ namespace ASP_Video_Website.Utility
         public string RunCommand(string Parameters)
         {
             //create a process info
-            ProcessStartInfo oInfo = new ProcessStartInfo(this._ffExe, Parameters);
-
-            
+            ProcessStartInfo oInfo = new ProcessStartInfo(this._ffExe, Parameters)
+            {
+                WorkingDirectory = HostingEnvironment.MapPath("~/MediaData")
+            };
 
             oInfo.UseShellExecute = false;
             oInfo.CreateNoWindow = true;

@@ -34,6 +34,7 @@ namespace ASP_Video_Website.Services
             var outputAudio = Path.Combine(baseDir, "audio.mp4");
             var outputMobile = Path.Combine(baseDir, "mobile.mp4");
             var outputThumbnail = Path.Combine(baseDir, "thumbnail.jpg");
+            var outputPasslogFile = Path.Combine(baseDir, "passlog");
 
             var segmentsDir = Path.Combine(baseDir, "segments");
 
@@ -45,8 +46,8 @@ namespace ASP_Video_Website.Services
                 FFMPEG ffmpeg = new FFMPEG();
 
                 // Convert to SD
-                string command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 \"{3}\"",
-                            mediaDir, ServerParams.VideoParams.p360.Video.Bitrate, ServerParams.VideoParams.p360.Video.Resolution, outputVidSd);
+                string command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 -passlogfile \"{3}\" \"{4}\"",
+                            mediaDir, ServerParams.VideoParams.p360.Video.Bitrate, ServerParams.VideoParams.p360.Video.Resolution, outputPasslogFile, outputVidSd);
                 var result = ffmpeg.RunCommand(command);
                 logFile.WriteLine("//////////////////////// SD Conversion:");
                 logFile.Write("COMMAND:  "+command);
@@ -55,8 +56,8 @@ namespace ASP_Video_Website.Services
                 //Convert to HD
                 if (videoQuality != VideoQuality.p360)
                 {
-                    command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 \"{3}\"",
-                        mediaDir, videoParams.Video.Bitrate, videoParams.Video.Resolution, outputVidHd);
+                    command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 -passlogfile \"{3}\" \"{4}\"",
+                        mediaDir, videoParams.Video.Bitrate, videoParams.Video.Resolution, outputPasslogFile, outputVidHd);
                     result = ffmpeg.RunCommand(command);
                     logFile.WriteLine("//////////////////////// HD Conversion:");
                     logFile.Write("COMMAND:  " + command);
