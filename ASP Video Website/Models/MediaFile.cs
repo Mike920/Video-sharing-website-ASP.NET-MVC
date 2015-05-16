@@ -10,6 +10,13 @@
         public string Description { get; set; }
         public bool IsPrivate { get; set; }
         public bool Hd { get; set; }
+        public bool IsBeingConverted { get; set; }
+        public VideoQuality VideoQuality { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
+
+        public bool IsHd()
+        {
+            return VideoQuality != VideoQuality.p360;
+        }
     }
 }

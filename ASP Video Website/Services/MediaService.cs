@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Hosting;
+using ASP_Video_Website.Models;
 using ASP_Video_Website.Utility;
 
 namespace ASP_Video_Website.Services
@@ -11,11 +14,14 @@ namespace ASP_Video_Website.Services
     {
         static public void ConvertVideo(string mediaName,int mediaId)
         {
+            var db = new ApplicationDbContext();
+            var dbRecord = db.MediaFiles.Find(mediaId);
+
             var baseDir = HostingEnvironment.MapPath("~/MediaData/Videos/" + mediaId);
             var mediaDir = Path.Combine(baseDir, mediaName);
 
             var mediaInfo = GetMediaInfo(mediaDir);
-
+            //todo error when mediinfo doesnt have video
             var logFilePath = HostingEnvironment.MapPath("~/MediaData/log.txt");
             
             StreamWriter logFile = new StreamWriter(logFilePath, true);
@@ -29,10 +35,13 @@ namespace ASP_Video_Website.Services
             VideoQuality videoQuality = ServerParams.VideoParams.ClassifyVideo(mediaInfo);
             MediaInfo videoParams = ServerParams.VideoParams.GetVideoParams(videoQuality);
 
+            dbRecord.VideoQuality = videoQuality;
+
             var outputVidSd = Path.Combine(baseDir, "sd.mp4");
             var outputVidHd = Path.Combine(baseDir, "hd.mp4");
             var outputAudio = Path.Combine(baseDir, "audio.mp4");
             var outputMobile = Path.Combine(baseDir, "mobile.mp4");
+            var outputMobileHd = Path.Combine(baseDir, "mobileHd.mp4");
             var outputThumbnail = Path.Combine(baseDir, "thumbnail.jpg");
             var outputPasslogFile = Path.Combine(baseDir, "passlog");
 
@@ -90,7 +99,16 @@ namespace ASP_Video_Website.Services
                 logFile.Write("COMMAND:  " + command);
                 logFile.WriteLine(result);
 
-             
+                //Convert to mobile Hd
+                if (videoQuality != VideoQuality.p360)
+                {
+                    command = String.Format("-i \"{0}\" -i \"{1}\" -c:v copy -c:a copy \"{2}\"",
+                        outputVidHd, outputAudio, outputMobileHd);
+                    result = ffmpeg.RunCommand(command);
+                    logFile.WriteLine("//////////////////////// Mobile HD Conversion:");
+                    logFile.Write("COMMAND:  " + command);
+                    logFile.WriteLine(result);
+                }
 
                 //Segment videos and audio 
                 Mp4Box mp4Box = new Mp4Box();
@@ -112,8 +130,10 @@ namespace ASP_Video_Website.Services
 
                 //todo: add entry to db
             }, TaskCreationOptions.LongRunning);
-            
 
+            dbRecord.IsBeingConverted = false;
+            db.Entry(dbRecord).State = EntityState.Modified;
+            db.SaveChanges();
         }
 
      

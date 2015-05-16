@@ -32,8 +32,8 @@
             muted: false
         },
         style: {
-            width: '600px',
-            height: '250px'
+            width: '640px',
+            height: '360px'
         },
         events: {
             onError: function(data) {
@@ -56,10 +56,22 @@
             "</video>";
             *@
         jwplayer("player").setup({
-            file: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobile.mp4"}, Request.Url.Scheme)",
             image: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "thumbnail.jpg"}, Request.Url.Scheme)",
-            width: 640,
-            height: 360
+            sources: [
+                {
+                file: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobile.mp4"}, Request.Url.Scheme)"
+            }
+            @if (@ViewBag.IsHd)
+            {
+                <text>
+                ,{
+                file: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobileHd.mp4"}, Request.Url.Scheme)"
+                }
+                </text>
+            }
+            ],
+            width: 480,
+            height: 240
         });
     }
 </script>

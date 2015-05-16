@@ -160,34 +160,36 @@ namespace ASP_Video_Website.Utility
         public MediaInfo GetMediaInfo(string path)
         {
             var param = String.Format(" -show_streams -print_format json \"{0}\" ", path);
-
-            var info = RunCommand(param);
-
             var mediaInfo = new MediaInfo();
 
-            dynamic data = Json.Decode(info);
-
-            
-
-            foreach (var stream in data.streams)
+            try
             {
-                
-                if (stream.codec_type == "audio")
-                    mediaInfo.Audio.HasAudio = true;
+                var info = RunCommand(param);
+                dynamic data = Json.Decode(info);
 
-                if (stream.codec_type == "video")
+                foreach (var stream in data.streams)
                 {
-                    mediaInfo.Video.HasVideo = true;
-                    mediaInfo.Video.Bitrate = int.Parse(stream.bit_rate)/1000;
-                    mediaInfo.Video.Duration = Convert.ToDouble((string) stream.duration, CultureInfo.InvariantCulture);
-                    mediaInfo.Video.Resolution.Width = stream.width;
-                    mediaInfo.Video.Resolution.Heigth = stream.height;
 
+                    if (stream.codec_type == "audio")
+                        mediaInfo.Audio.HasAudio = true;
+
+                    if (stream.codec_type == "video")
+                    {
+                        mediaInfo.Video.HasVideo = true;
+                        mediaInfo.Video.Bitrate = int.Parse(stream.bit_rate)/1000;
+                        mediaInfo.Video.Duration = Convert.ToDouble((string) stream.duration,
+                            CultureInfo.InvariantCulture);
+                        mediaInfo.Video.Resolution.Width = stream.width;
+                        mediaInfo.Video.Resolution.Heigth = stream.height;
+
+                    }
                 }
             }
-
+            catch (Exception)
+            {
+                return mediaInfo;
+            }
             return mediaInfo;
-
         }
 
        

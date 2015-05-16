@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using ASP_Video_Website.Extensions;
 using ASP_Video_Website.Models;
 using ASP_Video_Website.Services;
+using ASP_Video_Website.Utility;
 using Microsoft.AspNet.Identity;
 
 namespace ASP_Video_Website.Controllers
@@ -69,7 +70,15 @@ namespace ASP_Video_Website.Controllers
         [Route("Media/{id:int}")]
         public ActionResult Display(int id)
         {
+            MediaFile mediaFile = db.MediaFiles.Find(id);
+            if(mediaFile == null)
+                return HttpNotFound();
+
+            var videoParams = ServerParams.VideoParams.GetVideoParams(mediaFile.VideoQuality);
+  
             ViewBag.MediaId = id;
+            ViewBag.IsHd = mediaFile.IsHd();
+            ViewBag.videoParams = videoParams;
             return View();
         }
 
@@ -109,6 +118,7 @@ namespace ASP_Video_Website.Controllers
 
             if (file != null && file.ContentLength > 0)
             {
+                mediaFile.IsBeingConverted = true;
                 db.MediaFiles.Add(mediaFile);
                 db.SaveChanges();
 
@@ -123,6 +133,7 @@ namespace ASP_Video_Website.Controllers
                 var path = Path.Combine(dir, fileName);
                 file.SaveAs(path);
 
+                
                 MediaService.ConvertVideo(fileName,mediaFile.Id);
 
                 ViewBag.Info = "Your video was successfully uploaded";
