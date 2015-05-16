@@ -16,6 +16,7 @@
 
 <script src="~/Scripts/bitdash.min.js"></script>
 <script src="~/Scripts/detectmobilebrowser.js"></script>
+<script src="http://jwpsrv.com/library/OF57rvwbEeSB7hJtO5t17w.js"></script>
 
 <script type="text/javascript">
     var conf = {
@@ -48,10 +49,17 @@
     if (!isMobileDevice())
         player = bitdash("player").setup(conf);
     else {
-        var elem = document.getElementById('wrapper');
+        @* var elem = document.getElementById('wrapper');
         elem.innerHTML = "<video width='640' height='360' autoplay>" +
             " <source src='@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobile.mp4"}, Request.Url.Scheme)' type='video/mp4'>" +
             "Your browser does not support the video tag." +
             "</video>";
+            *@
+        jwplayer("player").setup({
+            file: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobile.mp4"}, Request.Url.Scheme)",
+            image: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "thumbnail.jpg"}, Request.Url.Scheme)",
+            width: 640,
+            height: 360
+        });
     }
 </script>
