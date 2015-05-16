@@ -14,7 +14,7 @@ namespace ASP_Video_Website.Extensions
         public VideoResult(string videoPath)
         {
             //The File Path
-            videoFilePath = HostingEnvironment.MapPath("~/"+videoPath);
+            videoFilePath = videoPath;
         }
        /* public override void ExecuteResult(ControllerContext context)
         {

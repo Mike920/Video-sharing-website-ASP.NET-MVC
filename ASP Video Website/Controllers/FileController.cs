@@ -59,6 +59,9 @@ namespace ASP_Video_Website.Controllers
             if (!System.IO.File.Exists(filepath))
                 return HttpNotFound();
 
+            if (filename.Split('.').Last() == "mp4")
+                return new VideoResult(filepath);
+
             string contentType = MimeMapping.GetMimeMapping(filepath);
 
             return File(filepath, contentType, filename);
