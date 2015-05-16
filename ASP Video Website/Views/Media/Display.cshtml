@@ -15,15 +15,16 @@
 
 
 <script src="~/Scripts/bitdash.min.js"></script>
-
+<script src="~/Scripts/detectmobilebrowser.js"></script>
 
 <script type="text/javascript">
     var conf = {
         key: "a688fd4642b4ff1f7fc403315975d07b",
         source: {
             // mpd: "file/sintel.mpd",
-            mpd: "@Url.Action("MediaSegment", "File", new { id = @ViewBag.MediaId, filename = "video.mpd" },Request.Url.Scheme)",
-            progressive: "@Url.Action("MediaFile", "File", new { id = @ViewBag.MediaId, filename = "mobile.mp4" },Request.Url.Scheme)"
+            mpd: "@Url.Action("MediaSegment", "File", new {id = @ViewBag.MediaId, filename = "video.mpd"}, Request.Url.Scheme)",
+            progressive: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobile.mp4"}, Request.Url.Scheme)",
+            poster: "@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "thumbnail.jpg"}, Request.Url.Scheme)"
         },
         playback: {
             autoplay: true,
@@ -34,14 +35,23 @@
             height: '250px'
         },
         events: {
-            onError: function (data) {
+            onError: function(data) {
                 console.error("bitdash error: " + data.code + ": " + data.message);
             },
-            onReady: function (obj) {
+            onReady: function(obj) {
                 console.log(this.getVersion() + ' onReady: ', obj);
             }
         }
     };
 
-    var player = bitdash("player").setup(conf);
+    var player;
+    if (!isMobileDevice())
+        player = bitdash("player").setup(conf);
+    else {
+        var elem = document.getElementById('wrapper');
+        elem.innerHTML = "<video width='640' height='360' autoplay>" +
+            " <source src='@Url.Action("MediaFile", "File", new {id = @ViewBag.MediaId, filename = "mobile.mp4"}, Request.Url.Scheme)' type='video/mp4'>" +
+            "Your browser does not support the video tag." +
+            "</video>";
+    }
 </script>
