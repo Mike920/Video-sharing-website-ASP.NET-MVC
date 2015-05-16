@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Web;
 using System.Web.Helpers;
@@ -166,10 +167,11 @@ namespace ASP_Video_Website.Utility
 
             dynamic data = Json.Decode(info);
 
-           
+            
 
             foreach (var stream in data.streams)
             {
+                
                 if (stream.codec_type == "audio")
                     mediaInfo.Audio.HasAudio = true;
 
@@ -177,7 +179,7 @@ namespace ASP_Video_Website.Utility
                 {
                     mediaInfo.Video.HasVideo = true;
                     mediaInfo.Video.Bitrate = int.Parse(stream.bit_rate)/1000;
-                    mediaInfo.Video.Duration = double.Parse(((string)stream.duration).Replace('.',','));
+                    mediaInfo.Video.Duration = Convert.ToDouble((string) stream.duration, CultureInfo.InvariantCulture);
                     mediaInfo.Video.Resolution.Width = stream.width;
                     mediaInfo.Video.Resolution.Heigth = stream.height;
 
