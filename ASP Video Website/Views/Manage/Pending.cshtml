@@ -1,23 +1,32 @@
-﻿
+﻿@model IEnumerable<ASP_Video_Website.Models.MediaFile>
+
 @{
-    ViewBag.Title = "Progress";
+    ViewBag.Title = "Videos are being prepared";
 }
 
-<h2>Conversion Progress</h2>
-
-
-
-
-<div class="progress" style="max-width: 300px;">
-    <div id="prog" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-        0%
+<h3><i class="fa fa-angle-right"></i> Videos</h3>
+<div class="row mt">
+    <div class="col-lg-12">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <h4>@item.Title</h4>
+                <div class="progress" style="max-width: 300px;">
+                    <div id="@item.Id" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                        0%
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
+
+
 @section Scripts {
 
-<script type="text/javascript">
-    @*    $(function () {
+    <script type="text/javascript">
+        @*    $(function () {
 
         var taskId = @ViewBag.Id;
         var intervalId = window.setInterval(function () {
@@ -34,9 +43,6 @@
 
     });*@
 
-    function redirect() {
-        window.location.replace("/manage/videos");
-    }
 
    var taskId = @ViewBag.Id;
     function GetProgress() {
@@ -48,14 +54,16 @@
                 $("#prog").attr('aria-valuenow',data);
                 $("#prog").html(data + '%');
                 $("#prog").css('width', data + '%');
-                if (data >= 98) {
-                    setTimeout(redirect(), 4000);
-                } 
+                if (data.value == 100) {
+                    isDone = true;
+                } else {
+                    setTimeout(GetProgress(), 2500);
+                }
             }
         });
     }
 
     var myInterval = setInterval(GetProgress(), 2000);
-</script>
+    </script>
 }
 

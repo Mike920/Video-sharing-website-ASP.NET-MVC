@@ -77,6 +77,17 @@ namespace ASP_Video_Website.Controllers
             return View("Index",data.ToList());
         }
 
+        public ActionResult Search(string id)
+        {
+            if (id == null)
+                return HttpNotFound();
+
+            var data = db.MediaFiles.Where(m => m.Title.Contains(id));
+
+
+            return View("Index", data.ToList());
+        }
+
         [Route("Media/{id:int}")]
         public ActionResult Display(int id)
         {

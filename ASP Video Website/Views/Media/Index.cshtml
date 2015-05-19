@@ -3,59 +3,28 @@
 @{
     ViewBag.Title = "Index";
 }
-<br />
 
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <a href='@Url.Action("Display", new { id = item.Id })'>
-                    <img src="@Url.Action("MediaFile", "File", new {id = item.Id, filename = "thumbnail.jpg"}, Request.Url.Scheme)" alt='' />
-                </a>
-                <div class="caption">
-                    <h3>@Html.ActionLink(item.Title, "Display", new { id = item.Id })</h3>
-                    @*<p>...</p>*@
-                </div>
-</div>
-        </div>
-    }
-</div>
+<h3><i class="fa fa-angle-right"></i> Videos</h3>
+<div class="row mt">
+    <div class="col-lg-12">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-4 col-sm-4 mb" style="width: 360px; height: 300px; margin-right: 10px;">
+                    <div class="content-panel pn" style="width: 360px; height: 300px;">
+                        <a href='@Url.Action("Display", new { id = item.Id })'>
+                            <img id="profile-01" style="width: 360px; height: 240px;" src="@Url.Action("MediaFile", "File", new {id = item.Id, filename = "thumbnail.jpg"}, Request.Url.Scheme)" alt='' />
+                        </a>
 @*
-    <table class="table">
-        <tr>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th></th>
-        </tr>
-
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.ActionLink("Display", "Display", new { id = item.Id }) |
-                @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
-                @Html.ActionLink("Details", "Details", new {id = item.Id}) |
-                @Html.ActionLink("Delete", "Delete", new {id = item.Id})
-            </td>
-        </tr>
-    }
-
-    </table>
+                        <div id="profile-01" style="height: 240px; background: transparent url('@Url.Action("MediaFile", "File", new {id = item.Id, filename = "thumbnail.jpg"}, Request.Url.Scheme)') no-repeat scroll center;"></div>
 *@
+                        <div class="left" style="padding-left: 5px; ">
+                            <h4 style="margin-top: 2px;"><i class=""></i><br/>@item.Title</h4>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

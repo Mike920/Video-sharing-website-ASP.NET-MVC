@@ -13,6 +13,22 @@ namespace ASP_Video_Website.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        public ActionResult Videos()
+        {
+             ApplicationDbContext db = new ApplicationDbContext();
+            var user = User.Identity.GetUserId();
+            var media = db.MediaFiles.Where(m => m.ApplicationUserId == user && !m.IsBeingConverted);
+            return View("../Media/Index",media.ToList());
+        }
+
+        public ActionResult Pending()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var user = User.Identity.GetUserId();
+            var media = db.MediaFiles.Where(m => m.ApplicationUserId == user && m.IsBeingConverted);
+            return View(media.ToList());
+        }
+
         public ManageController()
         {
         }
@@ -56,7 +72,9 @@ namespace ASP_Video_Website.Controllers
                 Logins = await UserManager.GetLoginsAsync(User.Identity.GetUserId()),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(User.Identity.GetUserId())
             };
-            return View(model);
+
+
+            return RedirectToAction("Videos");
         }
 
         //
