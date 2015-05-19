@@ -158,7 +158,6 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Controllers\AbController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -344,11 +343,6 @@
     <Content Include="Views\File\GetFiles.cshtml" />
     <Content Include="Views\Media\Progress.cshtml" />
     <Content Include="Views\Shared\_Layout - Copy.cshtml" />
-    <Content Include="Views\Ab\Create.cshtml" />
-    <Content Include="Views\Ab\Delete.cshtml" />
-    <Content Include="Views\Ab\Details.cshtml" />
-    <Content Include="Views\Ab\Edit.cshtml" />
-    <Content Include="Views\Ab\Index.cshtml" />
     <Content Include="Views\Shared\_Menu.cshtml" />
   </ItemGroup>
   <ItemGroup>
