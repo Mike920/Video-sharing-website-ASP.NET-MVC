@@ -33,6 +33,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
+               
                @Html.DropDownListFor(model => model.Category, (SelectList)ViewBag.Category, "Select category", new { @class = "form-control" })
                @* @Html.DropDownList("CategoryId", null, new { @class = "form-control" })*@
                 @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
@@ -52,7 +53,8 @@
         <div class="form-group">
             @Html.Label("Select file to upload", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="file" name="file" />
+                <span style="color: tomato">Warning! Maximum file size is 10 MB!</span>
+                <input type="file" name="file"/>
             </div>
         </div>
 
