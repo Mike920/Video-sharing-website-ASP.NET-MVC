@@ -393,7 +393,7 @@ namespace ASP_Video_Website.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Media");
         }
 
         //

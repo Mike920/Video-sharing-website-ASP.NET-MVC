@@ -1,9 +1,28 @@
 ﻿using ASP_Video_Website.Utility;
+using System.Collections.Generic;
 
 namespace ASP_Video_Website.Services
 {
     static public class ServerParams
     {
+    static public class CategoriesList
+    {
+        public static List<string> List
+        {
+            get
+            {
+                return new List<string>
+                {
+                    "Music",
+                    "Movie",
+                    "Entertainment",
+                    "News",
+                    "Sport"
+                };
+            }
+        }
+    }
+    
         static public class VideoParams
             {
                 static public MediaInfo p360

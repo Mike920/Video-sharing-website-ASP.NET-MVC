@@ -1,0 +1,28 @@
+﻿@using System.ComponentModel
+@using ASP_Video_Website.Services
+
+<li class="mt text-center" style="background: tomato;">
+    @Html.ActionLink("UPLOAD", "Upload", "Media", null, new { style = "color: white; font-weight: bold; font-size: 12px;" })
+    @* <a href="">
+            <span class="text-center" style="color: white; font-weight: bold; font-size: 12px;">UPLOAD</span>
+        </a>*@
+</li>
+
+<li class="mt">
+    <span style="color: whitesmoke">CATEGORIES</span>
+</li>
+
+<li class="sub-menu">
+    <a href="@Url.Action("Index","Media")">
+        <span>All</span>
+    </a>
+</li>
+
+@foreach (var category in ServerParams.CategoriesList.List)
+{
+    <li class="sub-menu">
+        <a href="@Url.Action("Category","Media",new{id = category})">
+            <span>@category</span>
+        </a>
+    </li>
+}

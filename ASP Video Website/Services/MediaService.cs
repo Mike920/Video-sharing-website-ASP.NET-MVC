@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Hosting;
+using System.Web.Mvc.Async;
 using ASP_Video_Website.Models;
 using ASP_Video_Website.Utility;
 
@@ -12,7 +15,7 @@ namespace ASP_Video_Website.Services
 {
     public class MediaService
     {
-        static public void ConvertVideo(string mediaName,int mediaId)
+        static public  void ConvertVideo(string mediaName,int mediaId)
         {
             var db = new ApplicationDbContext();
             var dbRecord = db.MediaFiles.Find(mediaId);
@@ -50,14 +53,32 @@ namespace ASP_Video_Website.Services
             if (!Directory.Exists(segmentsDir))
                 Directory.CreateDirectory(segmentsDir);
 
+            var hcontext = HttpContext.Current;
+
             var task = Task.Factory.StartNew(() =>
             {
+                HttpContext.Current = hcontext;
                 FFMPEG ffmpeg = new FFMPEG();
 
+                //What part of total progress is the current conversion
+                Dictionary<string, double> ConversionPercentages = new Dictionary<string, double>();
+               
+                if (videoQuality == VideoQuality.p360)
+                {
+                    ConversionPercentages["sd"] = 0.9;
+                    ConversionPercentages["audio"] = 0.1;
+                }
+                else
+                {
+                    ConversionPercentages["sd"] = 0.2;
+                    ConversionPercentages["hd"] = 0.7;
+                    ConversionPercentages["audio"] = 0.1;
+                }
+                
                 // Convert to SD
                 string command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 -passlogfile \"{3}\" \"{4}\"",
                             mediaDir, ServerParams.VideoParams.p360.Video.Bitrate, ServerParams.VideoParams.p360.Video.Resolution, outputPasslogFile, outputVidSd);
-                var result = ffmpeg.RunCommand(command);
+                var result = ffmpeg.RunCommand(command,mediaId,ConversionPercentages,"sd",mediaInfo.Video.Duration);
                 logFile.WriteLine("//////////////////////// SD Conversion:");
                 logFile.Write("COMMAND:  "+command);
                 logFile.WriteLine(result);
@@ -67,7 +88,7 @@ namespace ASP_Video_Website.Services
                 {
                     command = String.Format("-i \"{0}\" -an -b:v {1}k -s {2} -vcodec libx264 -r 24  -g 48 -keyint_min 48 -sc_threshold 0 -pass 1 -passlogfile \"{3}\" \"{4}\"",
                         mediaDir, videoParams.Video.Bitrate, videoParams.Video.Resolution, outputPasslogFile, outputVidHd);
-                    result = ffmpeg.RunCommand(command);
+                    result = ffmpeg.RunCommand(command, mediaId, ConversionPercentages, "hd", mediaInfo.Video.Duration);
                     logFile.WriteLine("//////////////////////// HD Conversion:");
                     logFile.Write("COMMAND:  " + command);
                     logFile.WriteLine(result);
@@ -76,7 +97,7 @@ namespace ASP_Video_Website.Services
                 //Convert Audio
                 command = String.Format("-i \"{0}\" -vn -strict experimental -c:a aac -b:a 128k \"{1}\"",
                     mediaDir, outputAudio);
-                result = ffmpeg.RunCommand(command);
+                result = ffmpeg.RunCommand(command, mediaId, ConversionPercentages,"audio", mediaInfo.Video.Duration);
                 logFile.WriteLine("//////////////////////// Audio Conversion:");
                 logFile.Write("COMMAND:  " + command);
                 logFile.WriteLine(result);

@@ -25,6 +25,14 @@ namespace ASP_Video_Website.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+
+          /*  context.Categories.AddOrUpdate(
+                new Category() { CategoryId = 1, Name = "Music"},
+                new Category() { CategoryId = 2, Name = "Movie" },
+                new Category() { CategoryId = 3, Name = "Entertainment" },
+                new Category() { CategoryId = 4, Name = "News" },
+                new Category() { CategoryId = 5, Name = "Sport" }
+                );*/
         }
     }
 }

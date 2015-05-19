@@ -22,9 +22,20 @@ namespace ASP_Video_Website
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/layoutjs").Include(
+                      "~/Scripts/jquery-ui-1.9.2.custom.min.js",
+                      "~/Scripts/jquery.ui.touch-punch.min.js",
+                      "~/Scripts/jquery.dcjqaccordion.2.7.js",
+                      "~/Scripts/jquery.scrollTo.min.js",
+                      "~/Scripts/jquery.nicescroll.js",
+                      "~/Scripts/common-scripts.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/style.css",
+                       "~/Content/style-responsive.css",
+                      "~/Content/font-awesome/css/font-awesome.css"));
 
             // Set EnableOptimizations to false for debugging. For more information,
             // visit http://go.microsoft.com/fwlink/?LinkId=301862

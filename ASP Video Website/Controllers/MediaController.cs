@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -45,12 +46,10 @@ namespace ASP_Video_Website.Controllers
       
         public ActionResult Index()
         {
-            //todo Cleaning data for appHarbor
-
+            
             var media = db.MediaFiles;
-
-           // var media = db.MediaFiles.ToList();
-
+          
+            //Appharbor deletes files on every deploy, clean the remaining records
             foreach (var m in media)
             {
                 var baseDir = HostingEnvironment.MapPath("~/MediaData/Videos/" + m.Id);
@@ -64,14 +63,25 @@ namespace ASP_Video_Website.Controllers
             }
             db.SaveChanges();
            // return View();
-             return View(media.ToList());
+             return View(media.Where(file => !file.IsBeingConverted).ToList());
+        }
+
+        public ActionResult Category(string id)
+        {   
+            if (id == null)
+                return HttpNotFound();
+
+            var data = db.MediaFiles.Where(m => m.Category == id);
+           
+
+            return View("Index",data.ToList());
         }
 
         [Route("Media/{id:int}")]
         public ActionResult Display(int id)
         {
             MediaFile mediaFile = db.MediaFiles.Find(id);
-            if(mediaFile == null)
+            if(mediaFile == null || mediaFile.IsBeingConverted)
                 return HttpNotFound();
 
             var videoParams = ServerParams.VideoParams.GetVideoParams(mediaFile.VideoQuality);
@@ -101,18 +111,21 @@ namespace ASP_Video_Website.Controllers
         [Authorize]
         public ActionResult Upload()
         {
+            ViewBag.Category = new SelectList(ServerParams.CategoriesList.List);
             return View();
         }
 
         [HttpPost]
-        public ActionResult Upload([Bind(Include = "Title,Description,IsPrivate")]MediaFile mediaFile, HttpPostedFileBase file)
+        public ActionResult Upload([Bind(Include = "Title,Description,IsPrivate,Category")]MediaFile mediaFile, HttpPostedFileBase file)
         {
 
             mediaFile.ApplicationUserId = User.Identity.GetUserId();
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !ServerParams.CategoriesList.List.Contains(mediaFile.Category))
+            {
+                ViewBag.Category = new SelectList(ServerParams.CategoriesList.List);
                 return View(mediaFile);
-            
+            }
 
 
 
@@ -138,7 +151,10 @@ namespace ASP_Video_Website.Controllers
 
                 ViewBag.Info = "Your video was successfully uploaded";
 
-                return View("Info");
+                ViewBag.Id = mediaFile.Id;
+                return View("Progress");
+
+                //return View("Info");
             }
 
             return View(mediaFile);
@@ -232,6 +248,27 @@ namespace ASP_Video_Website.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+      
+    
+
+        public ActionResult Progress(int id)
+        {
+
+            if (HttpContext.Cache[id.ToString()] != null)
+                return Json(new
+                {
+                    p=Math.Ceiling((double)HttpContext.Cache[id.ToString()]*100)
+                },
+                JsonRequestBehavior.AllowGet);
+            else
+                return Json(new
+                {
+                    p=0.0
+                },
+                JsonRequestBehavior.AllowGet);
+
         }
     }
 }

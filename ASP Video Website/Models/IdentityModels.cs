@@ -46,6 +46,5 @@ namespace ASP_Video_Website.Models
         }*/
 
         public DbSet<MediaFile> MediaFiles { get; set; }
-
     }
 }

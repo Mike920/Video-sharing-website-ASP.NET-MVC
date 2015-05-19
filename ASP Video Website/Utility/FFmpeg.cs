@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Helpers;
 using System.Web.Hosting;
 using Newtonsoft.Json;
@@ -22,6 +24,8 @@ namespace ASP_Video_Website.Utility
 
         private ProgramToRun programToRun;
         private string _ffExe;
+        
+
         public string ffExe
         {
             get
@@ -82,8 +86,9 @@ namespace ASP_Video_Website.Utility
         #endregion
 
         #region Run the process
-        public string RunCommand(string Parameters)
+        public string RunCommand(string Parameters, int? mediaId = null, Dictionary<string, double> ConversionPercentages = null,string currentConv=null, double? duration = null)
         {
+            HttpContext httpContext = HttpContext.Current;
             //create a process info
             ProcessStartInfo oInfo = new ProcessStartInfo(this._ffExe, Parameters)
             {
@@ -111,8 +116,50 @@ namespace ASP_Video_Website.Utility
                         {
                             Debug.WriteLine("Error: " + args.Data);
 
-                            if(programToRun == ProgramToRun.FFMPEG)
-                                output += args.Data +Environment.NewLine;
+                            if (programToRun == ProgramToRun.FFMPEG)
+                            {
+                                output += args.Data + Environment.NewLine;
+                                if (mediaId != null && ConversionPercentages != null && currentConv != null &&  duration != null)
+                                {
+                                    //SaveProgress(args.Data, (int)mediaId, (int)maxPercentage, (double)duration);
+                                    var data = args.Data;
+                                    if (data.Contains("time="))
+                                    {
+                                        var maxPercentage = ConversionPercentages[currentConv];
+                                        string stime = data.Substring(data.IndexOf("time="));
+                                        stime = stime.Replace("time=", "");
+                                        stime = stime.Split('.')[0];
+
+                                        var seconds = TimeSpan.Parse(stime).TotalSeconds;
+                                        
+                                        double perc = Math.Round(seconds,2) / Math.Round((double)duration,2);
+                                        perc = Math.Round (perc*(double)maxPercentage,2);
+                                        if (double.IsInfinity(perc))
+                                            perc = 0.0;
+                                       
+                                            if (currentConv == "sd")
+                                            {
+                                                httpContext.Cache[mediaId.ToString()] = perc;
+                                            }
+                                            if (currentConv == "hd")
+                                            {
+                                                httpContext.Cache[mediaId.ToString()] = ConversionPercentages["sd"] + perc;
+                                            }
+                                            if (currentConv == "audio")
+                                            {
+                                                if(ConversionPercentages.ContainsKey("hd"))
+                                                    httpContext.Cache[mediaId.ToString()] = ConversionPercentages["sd"] + ConversionPercentages["hd"] + perc;
+                                                else
+                                                    httpContext.Cache[mediaId.ToString()] = ConversionPercentages["sd"] + perc;
+                                            }
+                                            /* httpContext.Cache[mediaId.ToString()] =
+                                                (string)httpContext.Cache[mediaId.ToString()] + Environment.NewLine+
+                                                perc.ToString();*/
+                                            var a = 2;
+                                    }
+                                }
+
+                            }
                         }
                 };
 
@@ -192,8 +239,15 @@ namespace ASP_Video_Website.Utility
             return mediaInfo;
         }
 
-       
+        private void SaveProgress(string output, int mediaId, double maxPercentage, double duration)
+        {
+           
+            // HttpContext.Current.Cache[mediaId.ToString()]
+        }
     }
+
+    
+
      public struct MediaInfo
             {
                 public Video_ Video;
