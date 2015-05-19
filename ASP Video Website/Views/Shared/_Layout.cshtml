@@ -56,7 +56,7 @@
                     <li class="mt text-center" style="background: tomato;">
                         @Html.ActionLink("UPLOAD", "Upload", "Media", null, new { style = "color: white; font-weight: bold; font-size: 12px;" })
                     </li>
-                    @if (ViewContext.RouteData.Values["controller"] != null && (string)ViewContext.RouteData.Values["controller"] == "Manage")
+                    @if (ViewContext.RouteData.Values["controller"] != null && ((string)ViewContext.RouteData.Values["controller"]).ToLower() == "manage")
                     { @Html.Partial("_UserMenu")}
                     else
                     {@Html.Partial("_Menu")}
@@ -71,6 +71,7 @@
         <!--main content start-->
         <section id="main-content">
             <section class="wrapper site-min-height">
+                <a name="top" ></a>
                 @RenderBody()
             </section>
         </section><!-- /MAIN CONTENT -->
@@ -78,8 +79,8 @@
         <!--footer start-->
         <footer class="site-footer">
             <div class="text-center">
-                2014 - Alvarez.is
-                <a href="blank.html#" class="go-top">
+                2015 - Michał Rzepka
+                <a href="#top" class="go-top">
                     <i class="fa fa-angle-up"></i>
                 </a>
             </div>

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using ASP_Video_Website.Extensions;
@@ -11,6 +13,7 @@ using ASP_Video_Website.Models;
 using ASP_Video_Website.Services;
 using ASP_Video_Website.Utility;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace ASP_Video_Website.Controllers
 {
@@ -164,8 +167,9 @@ namespace ASP_Video_Website.Controllers
 
                 ViewBag.Info = "Your video was successfully uploaded";
 
-                
-                return RedirectToAction("Prog",new{id=mediaFile.Id});
+               
+                return RedirectToAction("Pending","Manage");
+                //return RedirectToAction("Prog",new{id=mediaFile.Id});
 
                 //return View("Info");
             }
@@ -270,21 +274,26 @@ namespace ASP_Video_Website.Controllers
             return View("Progress");
         }
 
-        public ActionResult Progress(int id)
+        [HttpPost]
+        public ActionResult Progress(List<int> id)
         {
+            if(id == null || id.Count == 0)
+                return null;
+      
 
-            if (HttpContext.Cache[id.ToString()] != null)
-                return Json(new
-                {
-                    p=Math.Ceiling((double)HttpContext.Cache[id.ToString()]*100)
-                },
-                JsonRequestBehavior.AllowGet);
-            else
-                return Json(new
-                {
-                    p=0.0
-                },
-                JsonRequestBehavior.AllowGet);
+            Dictionary<int,double> objects = new Dictionary<int, double>();
+            foreach (int i in id)
+            {
+                if (HttpContext.Cache[i.ToString()] != null)
+                    objects[i] = Math.Ceiling((double) HttpContext.Cache[i.ToString()]*100);
+                else
+                    objects[i] = 0.0;
+            }
+
+            var json = JsonConvert.SerializeObject(objects);
+
+            return Content(json, "application/json");
+
 
         }
     }

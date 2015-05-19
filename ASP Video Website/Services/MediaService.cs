@@ -149,12 +149,15 @@ namespace ASP_Video_Website.Services
                 if(File.Exists(outputVidHd)) File.Delete(outputVidHd);
                 File.Delete(outputAudio);
 
-                //todo: add entry to db
+                dbRecord.IsBeingConverted = false;
+                db.Entry(dbRecord).State = EntityState.Modified;
+                db.SaveChanges();
+
+                HttpContext.Current.Cache[mediaId.ToString()] = 1.0;
+
             }, TaskCreationOptions.LongRunning);
 
-            dbRecord.IsBeingConverted = false;
-            db.Entry(dbRecord).State = EntityState.Modified;
-            db.SaveChanges();
+            
         }
 
      

@@ -132,8 +132,8 @@ namespace ASP_Video_Website.Utility
 
                                         var seconds = TimeSpan.Parse(stime).TotalSeconds;
                                         
-                                        double perc = Math.Round(seconds,2) / Math.Round((double)duration,2);
-                                        perc = Math.Round (perc*(double)maxPercentage,2);
+                                        double perc = Math.Round(seconds,5) / Math.Round((double)duration,5);
+                                        perc = Math.Round (perc*(double)maxPercentage,5);
                                         if (double.IsInfinity(perc))
                                             perc = 0.0;
                                        
@@ -155,7 +155,7 @@ namespace ASP_Video_Website.Utility
                                             /* httpContext.Cache[mediaId.ToString()] =
                                                 (string)httpContext.Cache[mediaId.ToString()] + Environment.NewLine+
                                                 perc.ToString();*/
-                                            var a = 2;
+                                          
                                     }
                                 }
 
