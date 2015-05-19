@@ -98,6 +98,8 @@ namespace ASP_Video_Website.Controllers
             var videoParams = ServerParams.VideoParams.GetVideoParams(mediaFile.VideoQuality);
   
             ViewBag.MediaId = id;
+            ViewBag.T = mediaFile.Title;
+            ViewBag.Description = mediaFile.Description;
             ViewBag.IsHd = mediaFile.IsHd();
             ViewBag.videoParams = videoParams;
             return View();
@@ -162,8 +164,8 @@ namespace ASP_Video_Website.Controllers
 
                 ViewBag.Info = "Your video was successfully uploaded";
 
-                ViewBag.Id = mediaFile.Id;
-                return View("Progress");
+                
+                return RedirectToAction("Prog",new{id=mediaFile.Id});
 
                 //return View("Info");
             }
@@ -261,8 +263,12 @@ namespace ASP_Video_Website.Controllers
             base.Dispose(disposing);
         }
 
-      
-    
+
+        public ActionResult Prog(int id)
+        {
+            ViewBag.Id = id;
+            return View("Progress");
+        }
 
         public ActionResult Progress(int id)
         {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ASP_Video_Website.Models;
+using ASP_Video_Website.Services;
 using ASP_Video_Website.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -27,6 +28,24 @@ namespace ASP_Video_Website.Controllers
             var user = User.Identity.GetUserId();
             var media = db.MediaFiles.Where(m => m.ApplicationUserId == user && m.IsBeingConverted);
             return View(media.ToList());
+        }
+
+        [Route("Manage/{id:int}")]
+        public ActionResult Display(int id)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            MediaFile mediaFile = db.MediaFiles.Find(id);
+            if (mediaFile == null || mediaFile.IsBeingConverted)
+                return HttpNotFound();
+
+            var videoParams = ServerParams.VideoParams.GetVideoParams(mediaFile.VideoQuality);
+
+            ViewBag.MediaId = id;
+            ViewBag.T = mediaFile.Title;
+            ViewBag.Description = mediaFile.Description;
+            ViewBag.IsHd = mediaFile.IsHd();
+            ViewBag.videoParams = videoParams;
+            return View("../Media/Display");
         }
 
         public ManageController()

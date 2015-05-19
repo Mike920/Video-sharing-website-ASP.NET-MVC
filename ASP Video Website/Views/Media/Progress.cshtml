@@ -34,9 +34,6 @@
 
     });*@
 
-    function redirect() {
-        window.location.replace("/manage/videos");
-    }
 
    var taskId = @ViewBag.Id;
     function GetProgress() {
@@ -49,8 +46,12 @@
                 $("#prog").html(data + '%');
                 $("#prog").css('width', data + '%');
                 if (data >= 98) {
-                    setTimeout(redirect(), 4000);
-                } 
+                    setTimeout(function() {
+                        window.location.replace("/manage/videos");
+                    }, 5000);
+                } else {
+                    setTimeout(GetProgress(), 2000);
+                }
             }
         });
     }
