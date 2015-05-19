@@ -97,23 +97,30 @@ namespace ASP_Video_Website.Services
                 command = String.Format(" -ss {0} -i \"{1}\"  -vframes 1 -an -s 360x240  \"{2}\" ", (mediaInfo.Video.Duration / 2.0).ToString(CultureInfo.InvariantCulture),
                     mediaDir, outputThumbnail);
                 result = ffmpeg.RunCommand(command);
-           
 
-                //Convert to mobile (add sound to sd video)
-                command = String.Format("-i \"{0}\" -i \"{1}\" -c:v copy -c:a copy \"{2}\"",
-                        outputVidSd,outputAudio,outputMobile);
-                result = ffmpeg.RunCommand(command);
-      
-
-                //Convert to mobile Hd
-                if (videoQuality != VideoQuality.p360)
+                if (mediaInfo.Audio.HasAudio)
                 {
+                    //Convert to mobile (add sound to sd video)
                     command = String.Format("-i \"{0}\" -i \"{1}\" -c:v copy -c:a copy \"{2}\"",
-                        outputVidHd, outputAudio, outputMobileHd);
+                        outputVidSd, outputAudio, outputMobile);
                     result = ffmpeg.RunCommand(command);
-               
-                }
 
+
+                    //Convert to mobile Hd
+                    if (videoQuality != VideoQuality.p360)
+                    {
+                        command = String.Format("-i \"{0}\" -i \"{1}\" -c:v copy -c:a copy \"{2}\"",
+                            outputVidHd, outputAudio, outputMobileHd);
+                        result = ffmpeg.RunCommand(command);
+
+                    }
+                }
+                else
+                {
+                    File.Copy(outputVidSd,outputMobile);
+                    if (videoQuality != VideoQuality.p360)
+                        File.Copy(outputVidHd,outputMobileHd);
+                }
                 //Segment videos and audio 
                 Mp4Box mp4Box = new Mp4Box();
                 if (videoQuality == VideoQuality.p360)
