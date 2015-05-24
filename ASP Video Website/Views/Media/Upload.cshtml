@@ -6,7 +6,7 @@
 
 <h2>Upload new media</h2>
 
-@using (Html.BeginForm("Upload", "Media", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Upload", "Media", FormMethod.Post, new { enctype = "multipart/form-data", id="f1" }))
 {
     <div class="form-horizontal">
         <h4>MediaFile</h4>
@@ -54,37 +54,144 @@
             @Html.Label("Select file to upload", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <span style="color: tomato">Warning! Maximum file size is 10 MB!</span>
-                <input type="file" name="file"/>
+                
+                @* <input type="file" name="file" />*@
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-primary btn-file">
+                            Browse… <input type="file" name="file">
+                        </span>
+                    </span>
+                    <input type="text" id="filename" class="form-control" readonly="">
+                </div>
+                @Html.ValidationMessage("File", new { @class = "text-danger" })
+                <div id="filewarning" style="color: red; font-weight: bold; margin-top: 10px;"></div>
+
+                <div class="progress" style="max-width: 300px; display: none; margin-top: 20px;">
+                    <div id="prog" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0.1%">
+                        0%
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input id="sub" type="submit" value="Upload" class="btn btn-default"/>
+                <button id="cancel" class="btn btn-primary btn-file" disabled>Cancel</button>
             </div>
         </div>
     </div>
 
-    @*   <fieldset>
-            <legend>Media Element</legend>
-
-            <div class="editor-label">
-                Select Media File to Upload:
-            </div>
-            <div class="editor-field">
-                <input type="file" id="selectFile" value=" " />
-                <input type="button" id="fileUpload" value="Upload" />
-            </div>
-            <div id="progressBar" style="width: 50%; height: 20px; background-color: grey"></div>
-            <br />
-            <label id="statusMessage"></label>
-        </fieldset>*@
 }
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+
 @section Scripts {
     @* <script src="~/Scripts/media-upload.js"></script>
         @Scripts.Render("~/bundles/jqueryui")*@
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script>
+
+        //Upload button
+        $(document).on('change', '.btn-file :file', function() {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            var size = input.get(0).files[0].size;
+            size = (size / (1024 * 1024)).toFixed(2);
+
+            if (size > 10)
+                $('#filewarning').html("File is too large!");
+            else
+                $('#filewarning').html("");
+            input.trigger('fileselect', [numFiles, label]);
+
+            $("#filename").val(label + "  " + size + ' MB');
+        });
+
+
+
+
+
+        var validateFileInput = function() {
+            if ($('#filename').val() == null || $('#filename').val() == '') {
+                var content = '<span for="File" class="">' + 'Select a supported file.' + '</span>';
+                $('span[data-valmsg-for="File"]').html(content);
+                return false;
+            }
+            else
+                $('span[data-valmsg-for="File"]').html('');
+            return true;
+        };
+
+        $('#filename').bind('input', validateFileInput);
+
+        //Upload progress
+        (function() {
+
+            var bar = $('#prog');
+            var percent = $('.percent');
+            var status = $('#status');
+
+           
+
+            $('form').ajaxForm({
+                beforeSubmit: function(arr, $form, options) {
+                    $form.validate();
+
+                    if (!validateFileInput())
+                        return false;
+
+                    if (!$form.valid())
+                        return false;
+                    $('.progress').css('display', 'block');
+                    $('#sub').attr('disabled', 'disabled');
+                    $('#cancel').attr('disabled', false);
+                },
+                beforeSend: function(xhr) {
+                    $('#cancel').click(function() {
+                        $('#cancel').attr('disabled', 'disabled');
+                        $('.progress').css('display', 'none');
+                        $('#sub').attr('disabled', false);
+                        xhr.abort();
+                    });
+                },
+                uploadProgress: function(event, position, total, percentComplete) {
+
+
+                    //$(".progress").html(data);
+                    $("#prog").attr('aria-valuenow', percentComplete);
+                    $("#prog").html(percentComplete + '%');
+                    $("#prog").css('width', percentComplete + '%');
+                },
+
+                success: function(data, textStatus, xhr) {
+                    var percentComplete = 100;
+                    $("#prog").attr('aria-valuenow', percentComplete);
+                    $("#prog").html(percentComplete + '%');
+                    $("#prog").css('width', percentComplete + '%');
+
+                    //var json = data; //data.success;
+                    window.location.replace("@Url.Action("Pending", "Manage")");
+
+                },
+                error: function(data, textStatus, xhr) {
+                    var json = (data.responseJSON);
+                    $.each(json, function(key, value) {
+                        //<span for="Description" class="">Pole Description jest wymagane.</span>
+                        var content = '<span for="' + key + '" class="">' + value + '</span>';
+                        $('span[data-valmsg-for="' + key + '"]').html(content);
+                    });
+                },
+                complete: function(xhr) {
+
+                }
+            });
+
+        })();
+
+
+    </script>
 }
+

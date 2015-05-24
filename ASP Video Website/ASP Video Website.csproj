@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\dropzone.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\style-responsive.css" />
     <Content Include="Content\style.css" />
@@ -191,7 +192,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\site.css" />
     <Content Include="Libs\avcodec-55.dll" />
     <Content Include="Libs\avdevice-55.dll" />
     <Content Include="Libs\avfilter-4.dll" />
@@ -274,6 +275,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.9.2.custom.min.js" />
     <Content Include="Scripts\jquery.dcjqaccordion.2.7.js" />
+    <Content Include="Scripts\jquery.form.js" />
     <Content Include="Scripts\jquery.nicescroll.js" />
     <Content Include="Scripts\jquery.scrollTo.min.js" />
     <Content Include="Scripts\jquery.ui.touch-punch.min.js" />

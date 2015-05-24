@@ -54,16 +54,17 @@
                         $("#"+idList[i]).html(val + '%');
                         $("#"+idList[i]).css('width', val + '%');
 
-                        if (val >= 98)
+                        if (val >= 100)
                             reload = true;
                     }
 
-                   
-                    if (reload) {
+                    if(reload)
+                        location.reload();
+                   /* if (reload) {
                         setTimeout(function() {
                             location.reload();
                         }, 5000);
-                    } 
+                    } */
                 }
             });
         }

@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
@@ -131,51 +132,95 @@ namespace ASP_Video_Website.Controllers
             return View();
         }
 
+
+        //Called asynchronously, returns 200 status for success with redirect link response, 201 status foe error with validation messages
         [HttpPost]
         public ActionResult Upload([Bind(Include = "Title,Description,IsPrivate,Category")]MediaFile mediaFile, HttpPostedFileBase file)
         {
 
+            var isFileValid = file != null && file.ContentLength > 0;
+
             mediaFile.ApplicationUserId = User.Identity.GetUserId();
 
-            if (!ModelState.IsValid || !ServerParams.CategoriesList.List.Contains(mediaFile.Category))
+            if (!ModelState.IsValid || !isFileValid || !ServerParams.CategoriesList.List.Contains(mediaFile.Category))
             {
-                ViewBag.Category = new SelectList(ServerParams.CategoriesList.List);
-                return View(mediaFile);
+               // ViewBag.Category = new SelectList(ServerParams.CategoriesList.List);
+ 
+               // return View(mediaFile);
+                var ms = ModelState;
+                Response.StatusCode = 400;
+                /*var result = JsonConvert.SerializeObject(ModelState.Values);
+                return Content(result, "application/json");*/
+                var errors = ModelErrorsToDictionary(ModelState); 
+                if(!isFileValid)
+                    errors.Add("File","File not supported");
+
+                return Json(errors);
             }
 
+            
+           
+            mediaFile.IsBeingConverted = true;
+            db.MediaFiles.Add(mediaFile);
+            db.SaveChanges();
 
+            var dir = Server.MapPath("~/MediaData/Videos/" + mediaFile.Id);
 
-            if (file != null && file.ContentLength > 0)
-            {
-                mediaFile.IsBeingConverted = true;
-                db.MediaFiles.Add(mediaFile);
-                db.SaveChanges();
-
-                var dir = Server.MapPath("~/MediaData/Videos/" + mediaFile.Id);
-
-                //todo: check if dir exists
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
+            //todo: check if dir exists
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
                 
 
-                var fileName = Path.GetFileName(file.FileName);
-                var path = Path.Combine(dir, fileName);
-                file.SaveAs(path);
+            var fileName = Path.GetFileName(file.FileName);
+            var path = Path.Combine(dir, fileName);
+            file.SaveAs(path);
 
                 
-                MediaService.ConvertVideo(fileName,mediaFile.Id);
+            MediaService.ConvertVideo(fileName,mediaFile.Id);
 
-                ViewBag.Info = "Your video was successfully uploaded";
+            ViewBag.Info = "Your video was successfully uploaded";
 
                
-                return RedirectToAction("Pending","Manage");
-                //return RedirectToAction("Prog",new{id=mediaFile.Id});
-
-                //return View("Info");
-            }
-
-            return View(mediaFile);
+            // return RedirectToAction("Pending","Manage");
+            Response.StatusCode = 200;
+            return Json("Success");
             
+
+            
+        }
+
+        private Dictionary<string, string> ModelErrorsToDictionary(ModelStateDictionary ModelState)
+        {
+            var errorsDictionary = new Dictionary<string, string>();
+
+            if (!ModelState.IsValid)
+            {
+                
+                StringBuilder errors;
+
+                foreach (KeyValuePair<string, ModelState> state in ModelState)
+                {
+
+                    if (state.Value.Errors.Count > 0)
+                    {
+
+                        errors = new StringBuilder();
+
+                        foreach (ModelError err in state.Value.Errors)
+                        {
+
+                            errors.AppendLine(err.ErrorMessage);
+
+                        }
+
+                        errorsDictionary.Add(state.Key, errors.ToString());
+
+                    }
+
+                }
+               
+            }
+            return errorsDictionary;
         }
 
         // GET: Media/Create

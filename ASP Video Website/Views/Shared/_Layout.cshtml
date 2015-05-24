@@ -9,6 +9,9 @@
 
    @Styles.Render("~/Content/css")
    @Scripts.Render("~/bundles/modernizr")
+   @RenderSection("Styles", required: false)
+
+
 </head>
 
 <body>
@@ -94,14 +97,7 @@
     @Scripts.Render("~/bundles/layoutjs")
     @RenderSection("scripts", required: false)
 
-    <script>
-        //custom select box
 
-        $(function () {
-            $('select.styled').customSelect();
-        });
-
-    </script>
 
 </body>
 </html>

@@ -134,6 +134,8 @@ namespace ASP_Video_Website.Utility
                                         
                                         double perc = Math.Round(seconds,5) / Math.Round((double)duration,5);
                                         perc = Math.Round (perc*(double)maxPercentage,5);
+                                        if (perc > 0.99)
+                                            perc = 0.99;
                                         if (double.IsInfinity(perc))
                                             perc = 0.0;
                                        
