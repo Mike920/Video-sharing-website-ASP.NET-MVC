@@ -44,7 +44,7 @@
             @Html.LabelFor(model => model.IsPrivate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
-                    @Html.EditorFor(model => model.IsPrivate)
+                    @Html.EditorFor(model => model.IsPrivate, new { htmlAttributes = new { @style = "margin-left:0;" } })
                     @Html.ValidationMessageFor(model => model.IsPrivate, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -62,7 +62,7 @@
                             Browse… <input type="file" accept="video/*,.3g2,.3gp,.avi,.dvd,.f4v,.flv,.h261,.h263,.h264,.hds,.hls,.hls,.m4v,.mkv,.mov,.mp4,.mpeg,.mpeg1,.mpeg2,.ogg,.swf,.webm,.webm_,.webm_,.webp,.webp_,.webvt " name="file">
                         </span>
                     </span>
-                    <input type="text"  id="filename" class="form-control" readonly="">
+                    <input type="text" style="max-width: 315px;" id="filename" class="form-control" readonly="">
                 </div>
                 @Html.ValidationMessage("File", new { @class = "text-danger" })
                 <div id="filewarning" style="color: red; font-weight: bold; margin-top: 10px;"></div>
@@ -138,7 +138,7 @@
 
            
 
-            $('form').ajaxForm({
+            $('#f1').ajaxForm({
                 beforeSubmit: function(arr, $form, options) {
                     $form.validate();
 

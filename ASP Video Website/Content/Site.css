@@ -25,6 +25,42 @@ textarea {
 }
 */
 
+header.black-bg {
+    border-bottom: none;
+    background: lightblue;
+}
+
+#sidebar {
+    background: slategray;
+}
+
+.site-footer {
+    background: lightblue;
+}
+
+ul.sidebar-menu li a {
+    color: aliceblue;
+}
+
+ul.top-menu > li > .logout {
+        -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+          border-radius: 0 !important;
+    background: cornflowerblue;
+    border: none !important;    
+}
+
+input, select, button, .btn {
+    -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+          border-radius: 0 !important;
+    
+}
+
+input, select {
+    max-width: 400px;
+}
+
 .top-menu-item {
     
   color: #f2f2f2;
@@ -35,22 +71,22 @@ textarea {
   margin-top: 15px;
 }
 
-    .btn-file {
-        position: relative;
-        overflow: hidden;
-    }
-    .btn-file input[type=file] {
-        position: absolute;
-        top: 0;
-        right: 0;
-        min-width: 100%;
-        min-height: 100%;
-        font-size: 100px;
-        text-align: right;
-        filter: alpha(opacity=0);
-        opacity: 0;
-        outline: none;
-        background: white;
-        cursor: inherit;
-        display: block;
-    }
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
