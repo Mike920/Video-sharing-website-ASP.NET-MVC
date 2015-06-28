@@ -23,6 +23,7 @@ namespace ASP_Video_Website.Models
         [ScaffoldColumn(false)]
         public bool Admin { get; set; }
         public virtual ICollection<MediaFile> MediaFiles { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -46,5 +47,6 @@ namespace ASP_Video_Website.Models
         }*/
 
         public DbSet<MediaFile> MediaFiles { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

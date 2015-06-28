@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ASP_Video_Website.Models
@@ -23,6 +25,7 @@ namespace ASP_Video_Website.Models
         public virtual string Category { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
 
         public bool IsHd()
         {

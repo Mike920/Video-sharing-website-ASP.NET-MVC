@@ -12,7 +12,9 @@
     <h5>@ViewBag.Description</h5>
 </center>
 
+<div class="comment-container">
 
+</div>	
 
 <script src="~/Scripts/bitdash.min.js"></script>
 <script src="~/Scripts/detectmobilebrowser.js"></script>
@@ -75,3 +77,32 @@
         });
     }
 </script>
+
+@section Styles {
+    <link href="~/Content/jquery.comment.css" rel="stylesheet" />
+}
+@section Scripts {
+    <script src="~/Scripts/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="~/Scripts/jquery.autogrow-textarea.js"></script>
+    <script src="~/Scripts/jquery.comment.js"></script>
+    <script src="~/Scripts/jquery.timeago.js"></script>
+
+    //Load comments
+    <script>
+        $(document).ready(function () {
+
+            $('div.comment-container').comment({
+                title: 'Comments',
+                url_get: '@Url.Action("GetComments", "Comments", new { httproute = "" })',
+                url_input: 'articles/id/1/comments/input',
+                url_delete: 'articles/id/1/comments/delete',
+                limit: 10,
+                auto_refresh: false,
+                refresh: 10000,
+                transition: 'slideToggle',
+            });
+
+        });
+    </script>
+}
+
