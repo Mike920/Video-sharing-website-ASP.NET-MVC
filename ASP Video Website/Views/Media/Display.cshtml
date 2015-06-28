@@ -89,20 +89,21 @@
 
     //Load comments
     <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            $('div.comment-container').comment({
-                title: 'Comments',
-                url_get: '@Url.Action("GetComments", "Comments", new { httproute = "" })',
-                url_input: 'articles/id/1/comments/input',
-                url_delete: 'articles/id/1/comments/delete',
-                limit: 10,
-                auto_refresh: false,
-                refresh: 10000,
-                transition: 'slideToggle',
-            });
-
+        $('div.comment-container').comment({
+            title: 'Comments',
+            url_get: '@Url.Action("GetComments", "Comments", new { httproute = "" })',
+            videoId: @ViewBag.MediaId,
+            url_input: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Comments", action = "PostComment" })', //'articles/id/1/comments/input',
+            url_delete: 'articles/id/1/comments/delete',
+            limit: 10,
+            auto_refresh: false,
+            refresh: 10000,
+            transition: 'slideToggle',
         });
+
+    });
     </script>
 }
 

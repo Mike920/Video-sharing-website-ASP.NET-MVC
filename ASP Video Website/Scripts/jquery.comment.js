@@ -30,25 +30,25 @@ if ( typeof Object.create !== 'function' ) {
 			self.refresh_( 1 );
 		},
 
-		buildForm_: function(comment_id, parent_id){
+		buildForm_: function(CommentId, ParentId){
 			var self = this;
 			
 			var form_elem = $('<form></form>');
 
-			if(comment_id!=null)
-				form_elem.attr('action', self.options.url_input+'/'+comment_id);
+			if(CommentId!=null)
+				form_elem.attr('action', self.options.url_input+'/'+CommentId);
 			else
 				form_elem.attr('action', self.options.url_input);
 
 			form_elem.attr('method', 'post');
 
-			if(parent_id!=null)
+			if(ParentId!=null)
 			{
-				var parent_id_field = $('<input/>');
-				parent_id_field.attr('type', 'hidden');
-				parent_id_field.attr('name', 'parent_id');
-				parent_id_field.val(parent_id);
-				form_elem.append(parent_id_field);
+				var ParentId_field = $('<input/>');
+				ParentId_field.attr('type', 'hidden');
+				ParentId_field.attr('name', 'ParentId');
+				ParentId_field.val(ParentId);
+				form_elem.append(ParentId_field);
 			}
 
 			var textarea = $('<textarea></textarea>');
@@ -64,7 +64,7 @@ if ( typeof Object.create !== 'function' ) {
 					//form_elem.submit();
 					
 
-					self.submitForm_(comment_id, form_elem.serialize());
+					self.submitForm_(CommentId, form_elem.serialize());
 				}
 			});
 
@@ -73,14 +73,16 @@ if ( typeof Object.create !== 'function' ) {
 			return form_elem;
 		},
 
-		submitForm_: function(comment_id, form_data){
+		submitForm_: function(CommentId, form_data){
 			var self = this;
 
 			var url_input = self.options.url_input;
+			var videoId = self.options.videoId;
 
-			if(comment_id!=null) 	// form edit mode
-				url_input = self.options.url_input+'/'+comment_id;
+			if(CommentId!=null) 	// form edit mode
+			    url_input = self.options.url_input + '/' + CommentId;
 
+		    form_data+="&videoId="+videoId;
 			return $.ajax({
 				url: url_input,
 				data: form_data,
@@ -93,8 +95,8 @@ if ( typeof Object.create !== 'function' ) {
                 }
             }).done( function(result){
 
-                if(result.success!=undefined)
-                {
+                if(result.success!=undefined) {
+                   
                     if(result.success===false)
                     {
                         // error
@@ -107,11 +109,11 @@ if ( typeof Object.create !== 'function' ) {
                             }
                         });
                     }
-                    else
-                    {
-                    	if(comment_id!=null)	// edit mode
+                    else {
+                        result = result.result;
+                    	if(CommentId!=null)	// edit mode
                     	{
-                    		var item = $('#posted-'+comment_id, self.$elem);
+                    		var item = $('#posted-'+CommentId, self.$elem);
                     		
                     		var item_txt = $('.posted-comment-txt:hidden', item);
                     		item_txt.html(result.text);
@@ -123,21 +125,21 @@ if ( typeof Object.create !== 'function' ) {
                     	}
                     	else
                     	{
-	                    	result.fullname = self.user_info_.fullname;
-	                    	result.picture = self.user_info_.picture;
+	                    	result.Fullname = self.user_info_.Fullname;
+	                    	result.Picture = self.user_info_.Picture;
 
 	                    	// add new itemlist
 							var itemlist = self.buildItemList_( result );
 
-							if(result.parent_id===undefined)
+							if(result.ParentId===undefined)
 		                    	self.$rootlist.prepend(itemlist);
 		                    else
 		                    {
-		                    	if(result.parent_id==0)
+		                    	if(result.ParentId==0)
 			                    	self.$rootlist.prepend(itemlist);
 		                    	else
 		                    	{
-			                    	var id = 'posted-comment-child-'+result.parent_id;
+			                    	var id = 'posted-comment-child-'+result.ParentId;
 
 			                    	//prepend the new comment
 			                    	var the_child = $('ul[id="'+id+'"]', self.$elem).prepend(itemlist);
@@ -156,13 +158,14 @@ if ( typeof Object.create !== 'function' ) {
 	                    $('textarea', self.$elem).val('');                    	
 	                    $('textarea', self.$elem).attr("disabled", false);                    	                    		
                     }
+                    self.refresh_();
                 }                   
 
 
             });
 		},
 
-		buildPostBox_: function(parent_id){
+		buildPostBox_: function(ParentId){
 			var self = this;
 			
 			var elem = $('<div></div>');
@@ -190,7 +193,7 @@ if ( typeof Object.create !== 'function' ) {
 			if(self.user_info_.is_add_allowed)
 			{
 				// form new
-				var form_elem = self.buildForm_(null, parent_id);
+				var form_elem = self.buildForm_(null, ParentId);
 				form.append(form_elem);				
 			}
 
@@ -269,7 +272,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			var item = $( self.options.wrapEachWith );
 
-			item.attr('id', 'posted-'+comment_info.comment_id);
+			item.attr('id', 'posted-'+comment_info.CommentId);
 
 			// avatar-image
 			var avatar = $('<div></div>');
@@ -280,7 +283,7 @@ if ( typeof Object.create !== 'function' ) {
 			img_elem.attr('border', 0);
 			img_elem.addClass('ui-corner-all');
 
-			if(comment_info.created_by==self.user_info_.user_id)
+			if(comment_info.UserId==self.user_info_.user_id)
 				img_elem.addClass('curr-user-photo');
 
 			avatar.append(img_elem);
@@ -295,34 +298,34 @@ if ( typeof Object.create !== 'function' ) {
 			var post_head = $('<div></div>');
 			post_head.addClass('posted-comment-head');
 
-			// user-fullname
+			// user-Fullname
 			var username = $('<span></span>');
 			username.addClass('posted-comment-author');
-			username.html(comment_info.fullname);
+			username.html(comment_info.Fullname);
 			
 			post_head.append(username);
 
 			// in reply-to
-			if(comment_info.parent_id!=0)
+			if(comment_info.ParentId!=0)
 			{
 				// in-reply-to
-				var in_reply_to = $('<span></span>');
-				in_reply_to.addClass('in-reply-to');
-				in_reply_to.attr('title', 'in reply-to');
+				var InReplyTo = $('<span></span>');
+				InReplyTo.addClass('in-reply-to');
+				InReplyTo.attr('title', 'in reply-to');
 
 				// arrow
 				var arrow = $('<i></i>');
 				arrow.addClass('ui-icon');
 				arrow.addClass('ui-icon-arrow-1-e');
 
-				in_reply_to.append(arrow);
+				InReplyTo.append(arrow);
 
-				post_head.append(in_reply_to);
+				post_head.append(InReplyTo);
 
-				// user-fullname reply
+				// user-Fullname reply
 				var username_reply = $('<span></span>');
 				username_reply.addClass('posted-comment-author-reply');
-				username_reply.html(comment_info.in_reply_to);
+				username_reply.html(comment_info.InReplyTo);
 
 				post_head.append(username_reply);
 			}
@@ -335,13 +338,13 @@ if ( typeof Object.create !== 'function' ) {
 			post_head.append(dot);
 
 			// posted time
-			var posted_date = $('<span></span>');
-			posted_date.addClass('real-time');
-			posted_date.attr('title', self.timeStringToABBR_(comment_info.posted_date));
-			posted_date.html(comment_info.posted_date);
-			posted_date.timeago();
+			var PostedDate = $('<span></span>');
+			PostedDate.addClass('real-time');
+			PostedDate.attr('title', self.timeStringToABBR_(comment_info.PostedDate));
+			PostedDate.html(comment_info.PostedDate);
+			PostedDate.timeago();
 
-			post_head.append(posted_date);
+			post_head.append(PostedDate);
 
 			post_container.append(post_head);
 
@@ -352,7 +355,7 @@ if ( typeof Object.create !== 'function' ) {
 			// posted-comment-txt
 			var post_txt = $('<div></div>');
 			post_txt.addClass('posted-comment-txt');
-			post_txt.html(comment_info.text);
+			post_txt.html(comment_info.Text);
 
 			post_body.append(post_txt);
 			
@@ -363,13 +366,13 @@ if ( typeof Object.create !== 'function' ) {
 			post_foot.addClass('posted-comment-foot');
 
 			// edit
-			if(self.user_info_.is_edit_allowed && (comment_info.created_by==self.user_info_.user_id))
+			if(self.user_info_.is_edit_allowed && (comment_info.UserId==self.user_info_.user_id))
 			{
 				// form edit
 				var form_edit_container = $('<div></div>');
 				form_edit_container.addClass('posted-comment-form-edit');
 				form_edit_container.hide();
-				var form_edit_elem = self.buildForm_(comment_info.comment_id, comment_info.parent_id);
+				var form_edit_elem = self.buildForm_(comment_info.CommentId, comment_info.ParentId);
 				form_edit_container.append(form_edit_elem);
 				
 				post_body.append(form_edit_container);
@@ -406,7 +409,7 @@ if ( typeof Object.create !== 'function' ) {
 			}
 
 			// delete
-			if(self.user_info_.is_edit_allowed && (comment_info.created_by==self.user_info_.user_id))
+			if(self.user_info_.is_edit_allowed && (comment_info.UserId==self.user_info_.user_id))
 			{
 				var delete_container = $('<span></span>');
 				delete_container.addClass('post-delete');
@@ -428,7 +431,7 @@ if ( typeof Object.create !== 'function' ) {
 				// delete events-apply
 				delete_.on('click', function(e){
 					e.preventDefault();
-					self.buildDeleteConfirm_(comment_info.comment_id);
+					self.buildDeleteConfirm_(comment_info.CommentId);
 				});				
 			}
 
@@ -459,12 +462,12 @@ if ( typeof Object.create !== 'function' ) {
 
 			var ul_child_elem = $('<ul></ul>');
 			ul_child_elem.addClass('posted-comment-childs');
-			ul_child_elem.attr('id', 'posted-comment-child-'+comment_info.comment_id);
+			ul_child_elem.attr('id', 'posted-comment-child-'+comment_info.CommentId);
 
 			// postbox reply will be toggled show/hide by reply event
 			if(self.user_info_.is_add_allowed)
 			{
-				var postbox = self.buildPostBox_(comment_info.comment_id);
+				var postbox = self.buildPostBox_(comment_info.CommentId);
 				postbox.hide();
 				ul_child_elem.append(postbox);
 
@@ -476,12 +479,12 @@ if ( typeof Object.create !== 'function' ) {
 
 			}
 
-			// check if has childrens
-			if (comment_info.childrens != null && comment_info.childrens.length > 0)
+			// check if has Children
+			if (comment_info.Children != null && comment_info.Children.length > 0)
 			{
-				for(var i=0;i<comment_info.childrens.length;i++)
+				for(var i=0;i<comment_info.Children.length;i++)
 				{
-					var child = self.buildItemList_(comment_info.childrens[i]);
+					var child = self.buildItemList_(comment_info.Children[i]);
 					ul_child_elem.append(child);
 				}
 			}
@@ -505,11 +508,11 @@ if ( typeof Object.create !== 'function' ) {
 			return self.$total_comment;
 		},
 
-		removeItemList_: function( comment_id ){
+		removeItemList_: function( CommentId ){
 			var self = this;
 
 			// find target
-			var target = $('#posted-'+comment_id, self.$elem);
+			var target = $('#posted-'+CommentId, self.$elem);
 
 			// remove target
 			target.remove();
@@ -543,7 +546,9 @@ if ( typeof Object.create !== 'function' ) {
 			}
 		},
 
-		timeStringToABBR_: function( time_string ) {
+		timeStringToABBR_: function (time_string) {
+		    if (time_string === undefined || time_string === null)
+		        return "";
 			var abbr_str = '';
 			
 			var split = time_string.split(' ');
@@ -559,7 +564,7 @@ if ( typeof Object.create !== 'function' ) {
 			return abbr_str;
 		},
 
-		buildDeleteConfirm_: function( comment_id ) {
+		buildDeleteConfirm_: function( CommentId ) {
 			var self = this;
 			
 			var delete_confirm = $('div[id="dialog-delete-comment-confirm"]');
@@ -587,7 +592,7 @@ if ( typeof Object.create !== 'function' ) {
 		        modal: true,
 		        buttons: {
 		            Yes: function () {
-		            	var form_data = { 'comment_id': comment_id };
+		            	var form_data = { 'CommentId': CommentId };
 						
 						$.ajax({
 							url: self.options.url_delete,
@@ -612,7 +617,7 @@ if ( typeof Object.create !== 'function' ) {
 			                    }
 			                    else
 			                    {
-			                    	self.removeItemList_(comment_id);
+			                    	self.removeItemList_(CommentId);
 
 			                    	self.total_comment = result.total_comment;
 			                    	
@@ -650,6 +655,7 @@ if ( typeof Object.create !== 'function' ) {
 		title: 'Notes',
 		url_get: '#',
 		url_input: '#',
+        videoId: '#',
 		url_delete: '#',
 		wrapEachWith: '<li></li>',
 		limit: 10,

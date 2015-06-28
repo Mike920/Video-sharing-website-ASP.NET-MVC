@@ -9,22 +9,34 @@ namespace ASP_Video_Website.Models
 {
     public  class Comment
     {
+        public Comment()
+        {
+            Children = new List<Comment>();
+        }
+
         [Key]
-        public int comment_id { get; set; }
-        public string text { get; set; }
+        public int CommentId { get; set; } //comment_id
+        public string Text { get; set; } //text
         //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime posted_date { get; set; }
-        public string in_reply_to { get; set; }
-        public string fullname { get; set; }
-        public string picture { get { return HostingEnvironment.MapPath("~/Content/images/user_blank_picture.png"); } }
+        public DateTime PostedDate { get; set; } //posted_date
 
-      //  public int element_id { get; set; }
-        public virtual MediaFile element { get; set; }
+        public string InReplyTo  //in_reply_to
+        {
+            get { return Parent != null && Parent.User != null ? Parent.User.UserName : null; }
+        }
+        public string Fullname {
+            get { return User != null? User.UserName : null; }
+        } //fullname
+        public string Picture { get { return HostingEnvironment.MapPath("~/Content/images/user_blank_picture.png"); } } //picture
 
-        public virtual int? parent_id { get; set; }
-        public virtual Comment  parent {get; set;}
-        public virtual ICollection<Comment> childrens { get; set; }
-        //user id
-        public string created_by { get; set; }
+        public int VideoId { get; set; }  //element_id
+        public virtual MediaFile Video { get; set; } //element
+
+        public virtual int? ParentId { get; set; } //parent_id
+        public virtual Comment  Parent {get; set;} //parent
+        public virtual ICollection<Comment> Children { get; set; } //childrens
+        public string UserId { get; set; } //created_by
+        public virtual ApplicationUser User { get; set; }
+        
     }
 }

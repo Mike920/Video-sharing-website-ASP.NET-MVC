@@ -362,6 +362,7 @@
     <Content Include="Views\Shared\_Menu.cshtml" />
     <Content Include="Views\Shared\_UserMenu.cshtml" />
     <Content Include="Views\Manage\Pending.cshtml" />
+    <Content Include="Views\Media\Manage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Videos\" />

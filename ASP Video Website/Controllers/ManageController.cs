@@ -30,6 +30,14 @@ namespace ASP_Video_Website.Controllers
             return View(media.ToList());
         }
 
+        public ActionResult Manage()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var user = User.Identity.GetUserId();
+            var media = db.MediaFiles.Where(m => m.ApplicationUserId == user && !m.IsBeingConverted);
+            return View("../Media/Manage", media.ToList());
+        }
+
         [Route("Manage/{id:int}")]
         public ActionResult Display(int id)
         {

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.UI;
 using ASP_Video_Website.Migrations;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -46,6 +47,15 @@ namespace ASP_Video_Website.Models
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, Migrations.Configuration>());
         }*/
 
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Comment>()
+                        .HasOptional(s => s.Parent)
+                        .WithMany(s => s.Children)
+                        .HasForeignKey(s => s.ParentId);
+        }
         public DbSet<MediaFile> MediaFiles { get; set; }
         public DbSet<Comment> Comments { get; set; }
     }

@@ -6,9 +6,11 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.ModelBinding;
 using ASP_Video_Website.Models;
 using Microsoft.AspNet.Identity;
 
@@ -24,7 +26,7 @@ namespace ASP_Video_Website.Controllers
         public IHttpActionResult GetComments()
         {
             //db.Configuration.LazyLoadingEnabled = false;
-            var comm = db.Comments.Include("element").Include("parent");
+            var comm = db.Comments.Include("Video").Include("Parent").Include("Children").Where(c => c.Parent == null);
             //return Json(new { comments = comm});
             /*var json = JsonConvert.SerializeObject(new {comments = comm});
 
@@ -47,8 +49,8 @@ namespace ASP_Video_Website.Controllers
                                     new
                                     {
                                         user_id = currentUserId,
-                                        fullname = currentUser.UserName,
-                                        picture = HostingEnvironment.MapPath("~/Content/images/user_blank_picture.png"),
+                                        Fullname = currentUser != null ? currentUser.UserName : null,
+                                        Picture = HostingEnvironment.MapPath("~/Content/images/user_blank_picture.png"),
                                         is_logged_in = true,
                                         is_add_allowed = true,
                                         is_edit_allowed = true
@@ -80,7 +82,7 @@ namespace ASP_Video_Website.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != comment.comment_id)
+            if (id != comment.CommentId)
             {
                 return BadRequest();
             }
@@ -110,7 +112,17 @@ namespace ASP_Video_Website.Controllers
         [ResponseType(typeof(Comment))]
         public IHttpActionResult PostComment(Comment comment)
         {
-            if (!ModelState.IsValid)
+            string currentUserId = User.Identity.GetUserId();
+            if (currentUserId == null)
+                return Unauthorized();
+            /*if(VideoId == null)
+                return BadRequest(ModelState);
+            comment.VideoId = (int)VideoId;*/
+            comment.User = db.Users.FirstOrDefault(x => x.Id == currentUserId);
+            comment.PostedDate = DateTime.Now;
+            ModelState.Clear();
+            TryValidateModel(comment);
+            if (!TryValidateModel(comment))
             {
                 return BadRequest(ModelState);
             }
@@ -118,7 +130,12 @@ namespace ASP_Video_Website.Controllers
             db.Comments.Add(comment);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = comment.comment_id }, comment);
+            return Ok(new
+            {
+                success=true, result = comment
+            
+            });
+            //return CreatedAtRoute("DefaultApi", new { id = comment.CommentId }, comment);
         }
 
         // DELETE: api/Comments/5
@@ -148,7 +165,30 @@ namespace ASP_Video_Website.Controllers
 
         private bool CommentExists(int id)
         {
-            return db.Comments.Count(e => e.comment_id == id) > 0;
+            return db.Comments.Count(e => e.CommentId == id) > 0;
+        }
+
+        protected internal bool TryValidateModel(object model)
+        {
+            return TryValidateModel(model, null /* prefix */);
+        }
+
+        protected internal bool TryValidateModel(object model, string prefix)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException("model");
+            }
+
+            ModelMetadata metadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, model.GetType());
+            var t = new ModelBindingExecutionContext(new HttpContextWrapper(HttpContext.Current), new System.Web.ModelBinding.ModelStateDictionary());
+
+            foreach (ModelValidationResult validationResult in ModelValidator.GetModelValidator(metadata, t).Validate(null))
+            {
+                ModelState.AddModelError(validationResult.MemberName, validationResult.Message);
+            }
+
+            return ModelState.IsValid;
         }
     }
 }

@@ -300,6 +300,13 @@ namespace ASP_Video_Website.Controllers
             MediaFile mediaFile = db.MediaFiles.Find(id);
             db.MediaFiles.Remove(mediaFile);
             db.SaveChanges();
+
+            var dir = Server.MapPath("~/MediaData/Videos/" + id);
+
+            //todo: check if dir exists
+            if (Directory.Exists(dir))
+                Directory.Delete(dir,true);
+
             return RedirectToAction("Index");
         }
 
